@@ -24,6 +24,12 @@ import { Input } from "~/components/ui/Input";
 import * as Popover from "@radix-ui/react-popover";
 import { BiUser } from "react-icons/bi";
 import { Separator } from "./Separator";
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./DropdownMenu";
+import { Arrow, DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
 
 export const Header = () => {
   const { theme, setTheme } = useTheme();
@@ -43,11 +49,14 @@ export const Header = () => {
             <NavigationMenuItem>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button className="btn-ghost mr-2 border border-white hover:border-white">
+                  <Button
+                    variant="outline"
+                    className="mr-2 border border-white text-white hover:border-white hover:text-white"
+                  >
                     Create a listing
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-base-100 text-black dark:text-white sm:max-w-[425px]">
+                <DialogContent className="bg-background sm:max-w-[425px]">
                   <DialogHeader>
                     <DialogTitle>Create a new listing</DialogTitle>
                     <DialogDescription>lorem description</DialogDescription>
@@ -88,7 +97,7 @@ export const Header = () => {
             <NavigationMenuItem>
               {theme === "dark" ? (
                 <Button
-                  className="btn-ghost h-10 w-10 px-0 text-white"
+                  className="h-10 w-10 px-0 text-white"
                   onClick={() => setTheme("light")}
                   title="Switch to light mode"
                 >
@@ -96,7 +105,7 @@ export const Header = () => {
                 </Button>
               ) : (
                 <Button
-                  className="btn-ghost h-10 w-10 px-0 text-white"
+                  className="h-10 w-10 px-0 text-white"
                   onClick={() => setTheme("dark")}
                   title="Switch to dark mode"
                 >
@@ -105,10 +114,19 @@ export const Header = () => {
               )}
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <div className="dropdown-end dropdown">
-                <Button className="btn-ghost h-10 w-10 px-0">
-                  <BiUser className="h-7 w-7" />
-                </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Button className="h-10 w-10 px-0">
+                    <BiUser className="h-7 w-7" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  sideOffset={5}
+                  className="z-50 mr-8 min-w-[8rem] overflow-hidden rounded-md border bg-background p-1 text-popover-foreground shadow-md animate-in data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
+                >
+                  <DropdownMenuItem>Login</DropdownMenuItem>
+                  <DropdownMenuItem>Sign up</DropdownMenuItem>
+                </DropdownMenuContent>
                 {/* <ul
                   tabIndex={0}
                   className="dropdown-content menu rounded-box menu-compact bg-base-100 mt-3 w-52 p-2 shadow"
@@ -127,7 +145,7 @@ export const Header = () => {
                     <a>Logout</a>
                   </li>
                 </ul> */}
-              </div>
+              </DropdownMenu>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
