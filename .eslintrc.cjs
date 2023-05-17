@@ -1,35 +1,35 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const path = require("path");
-
-/** @type {import("eslint").Linter.Config} */
-const config = {
+/** @type{import("eslint").Linter.Config} */
+module.exports = {
   overrides: [
     {
       extends: [
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
       ],
       files: ["*.ts", "*.tsx"],
+      excludedFiles: ["**/*.test.ts", "**/*.test.tsx"],
       parserOptions: {
-        project: path.join(__dirname, "tsconfig.json"),
+        project: "tsconfig.json",
       },
     },
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    project: path.join(__dirname, "tsconfig.json"),
+    project: "./tsconfig.json",
   },
   plugins: ["@typescript-eslint"],
   extends: ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
   rules: {
-    "@typescript-eslint/consistent-type-imports": [
-      "warn",
+    "@typescript-eslint/no-empty-interface": "off",
+    "react/no-unescaped-entities": 0,
+    "@typescript-eslint/consistent-type-imports": "warn",
+    "@typescript-eslint/no-misused-promises": [
+      2,
       {
-        prefer: "type-imports",
-        fixStyle: "inline-type-imports",
+        checksVoidReturn: {
+          // Allow promises to be used as attributes such as `onSubmit`
+          attributes: false,
+        },
       },
     ],
-    "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
   },
 };
-
-module.exports = config;
