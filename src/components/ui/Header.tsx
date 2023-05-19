@@ -39,6 +39,7 @@ export const Header = () => {
             <NavigationMenuItem>
               {theme === "dark" ? (
                 <Button
+                  variant="ghost"
                   className="h-10 w-10 px-0 text-white"
                   onClick={() => setTheme("light")}
                   title="Switch to light mode"
@@ -47,7 +48,8 @@ export const Header = () => {
                 </Button>
               ) : (
                 <Button
-                  className="h-10 w-10 px-0 text-white"
+                  variant="ghost"
+                  className="h-10 w-10 px-0 text-white hover:text-white"
                   onClick={() => setTheme("dark")}
                   title="Switch to dark mode"
                 >
@@ -58,7 +60,10 @@ export const Header = () => {
             <NavigationMenuItem>
               <DropdownMenu>
                 <DropdownMenuTrigger>
-                  <Button className="h-10 w-10 px-0">
+                  <Button
+                    variant="ghost"
+                    className="h-10 w-10 px-0 text-white hover:text-white"
+                  >
                     <BiUser className="h-7 w-7" />
                   </Button>
                 </DropdownMenuTrigger>

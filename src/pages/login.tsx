@@ -16,7 +16,35 @@ import { Header } from "~/components/ui/Header";
 import { Button } from "~/components/ui/Button";
 import Link from "next/link";
 
+export const userSignupSchema = z.object({
+  email: z.string().email(),
+  password: z.string().nonempty("Password cannot be blank."),
+});
+
 const LoginPage: NextPage = () => {
+  const methods = useZodForm({
+    schema: userSignupSchema,
+  });
+
+  // const utils = api.useContext();
+  // const createPost = api.post.create.useMutation({
+  //   onSettled: async () => {
+  //     await utils.post.invalidate();
+  //     methods.reset();
+  //   },
+  // });
+
+  const onSubmit = methods.handleSubmit(
+    (data) => {
+      // createPost.mutate(data);
+      console.log(data);
+    },
+    (e) => {
+      console.log("Whoops... something went wrong!");
+      console.error(e);
+    }
+  );
+
   return (
     <>
       <Head>
@@ -28,24 +56,9 @@ const LoginPage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className="text-primary-content -mt-[4rem] grid h-screen place-items-center items-center bg-gradient-to-br from-primary to-secondary pt-20">
+      <main className="text-primary-content -mt-[4rem] grid place-items-center items-center bg-gradient-to-br from-primary to-secondary pt-20">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-          <form
-            action=""
-            className="flex flex-col gap-4"
-            onSubmit={(event) => {
-              event.preventDefault();
-              console.log("hi");
-            }}
-          >
-            <div className="space-y-1">
-              <Input
-                id="username"
-                placeholder="Username"
-                // {...methods.register("title")}
-              />
-              <p className="font-medium text-red-500">error</p>
-            </div>
+          <form action="" className="flex flex-col gap-4" onSubmit={onSubmit}>
             <div className="space-y-1">
               <Input
                 id="email"
@@ -62,18 +75,12 @@ const LoginPage: NextPage = () => {
               />
               <p className="font-medium text-red-500">error</p>
             </div>
-            <div className="space-y-1">
-              <Input
-                id="confirm"
-                placeholder="Confirm password"
-                // {...methods.register("body")}
-              />
-              <p className="font-medium text-red-500">error</p>
-            </div>
-            <Button type="submit">Sign up</Button>
+            <Button type="submit">Login</Button>
             <div>
-              <p>Already have an account?</p>
-              <Link href="login">Login</Link>
+              <p className="text-white">Already have an account?</p>
+              <Link href="signup" className="text-primary underline">
+                Sign up
+              </Link>
             </div>
             <p className="font-medium text-red-500">error</p>
           </form>
