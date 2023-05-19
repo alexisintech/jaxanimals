@@ -7,29 +7,16 @@ import { Button } from "./Button";
 import {
   NavigationMenu,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
-  navigationMenuTriggerStyle,
 } from "~/components/ui/NavigationMenu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "~/components/ui/Dialog";
-import { Input } from "~/components/ui/Input";
-import * as Popover from "@radix-ui/react-popover";
 import { BiUser } from "react-icons/bi";
-import { Separator } from "./Separator";
 import {
   DropdownMenu,
   DropdownMenuItem,
+  DropdownMenuContent,
   DropdownMenuTrigger,
 } from "./DropdownMenu";
-import { Arrow, DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
+import CreateListing from "../index/CreateListing";
 
 export const Header = () => {
   const { theme, setTheme } = useTheme();
@@ -47,52 +34,7 @@ export const Header = () => {
         <NavigationMenu className="flex flex-1 items-center justify-between space-x-2 sm:space-x-4 md:justify-end">
           <NavigationMenuList className="gap-1">
             <NavigationMenuItem>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="mr-2 border border-white text-white hover:border-white hover:text-white"
-                  >
-                    Create a listing
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="bg-background sm:max-w-[425px]">
-                  <DialogHeader>
-                    <DialogTitle>Create a new listing</DialogTitle>
-                    <DialogDescription>lorem description</DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <label htmlFor="name" className="text-right">
-                        Name
-                      </label>
-                      <Input
-                        id="name"
-                        value="Pedro Duarte"
-                        className="col-span-3"
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <label htmlFor="username" className="text-right">
-                        Username
-                      </label>
-                      <Input
-                        id="username"
-                        value="@peduarte"
-                        className="col-span-3"
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button
-                      type="submit"
-                      className="text-black hover:bg-black hover:bg-opacity-5 dark:text-white dark:hover:bg-white"
-                    >
-                      Save changes
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+              <CreateListing />
             </NavigationMenuItem>
             <NavigationMenuItem>
               {theme === "dark" ? (
@@ -124,27 +66,17 @@ export const Header = () => {
                   sideOffset={5}
                   className="z-50 mr-8 min-w-[8rem] overflow-hidden rounded-md border bg-background p-1 text-popover-foreground shadow-md animate-in data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
                 >
-                  <DropdownMenuItem>Login</DropdownMenuItem>
-                  <DropdownMenuItem>Sign up</DropdownMenuItem>
+                  <Link href="/login">
+                    <DropdownMenuItem className="cursor-pointer">
+                      Login
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link href="/login">
+                    <DropdownMenuItem className="cursor-pointer">
+                      Sign up
+                    </DropdownMenuItem>
+                  </Link>
                 </DropdownMenuContent>
-                {/* <ul
-                  tabIndex={0}
-                  className="dropdown-content menu rounded-box menu-compact bg-base-100 mt-3 w-52 p-2 shadow"
-                >
-                  <li>
-                    <a>My Listings</a>
-                  </li>
-                  <li>
-                    <a>Saved Listings</a>
-                  </li>
-                  <li>
-                    <a>Settings</a>
-                  </li>
-                  <Separator className="my-2 bg-slate-400 opacity-50 dark:bg-slate-400" />
-                  <li>
-                    <a>Logout</a>
-                  </li>
-                </ul> */}
               </DropdownMenu>
             </NavigationMenuItem>
           </NavigationMenuList>
