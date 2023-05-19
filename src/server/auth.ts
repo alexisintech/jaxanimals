@@ -5,9 +5,9 @@ import {
   type DefaultSession,
 } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import EmailProvider from "next-auth/providers/email";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
+import GoogleProvider from "next-auth/providers/google";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -47,10 +47,9 @@ export const authOptions: NextAuthOptions = {
   },
   adapter: PrismaAdapter(prisma),
   providers: [
-    EmailProvider({
-      server: process.env.EMAIL_SERVER,
-      from: process.env.EMAIL_FROM,
-      // maxAge: 24 * 60 * 60, // How long email links are valid for (default 24h)
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
     /**
      * ...add more providers here.

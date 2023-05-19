@@ -1,14 +1,10 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 
-import { api } from "~/utils/api";
-
 import { Header } from "~/components/ui/Header";
 import { Hero } from "~/components/index/Hero";
 
 const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
   return (
     <>
       <Head>

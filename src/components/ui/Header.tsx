@@ -15,11 +15,15 @@ import {
   DropdownMenuItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "./DropdownMenu";
 import CreateListing from "../index/CreateListing";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { api } from "~/utils/api";
 
 export const Header = () => {
   const { theme, setTheme } = useTheme();
+  const { data: sessionData } = useSession();
 
   return (
     <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full backdrop-blur">
@@ -34,7 +38,17 @@ export const Header = () => {
         <NavigationMenu className="flex flex-1 items-center justify-between space-x-2 sm:space-x-4 md:justify-end">
           <NavigationMenuList className="gap-1">
             <NavigationMenuItem>
-              <CreateListing />
+              {sessionData ? (
+                <CreateListing />
+              ) : (
+                <Button
+                  onClick={() => void signIn()}
+                  variant="outline"
+                  className="mr-2 border border-white text-white hover:border-white hover:text-white"
+                >
+                  Login
+                </Button>
+              )}
             </NavigationMenuItem>
             <NavigationMenuItem>
               {theme === "dark" ? (
@@ -57,33 +71,31 @@ export const Header = () => {
                 </Button>
               )}
             </NavigationMenuItem>
-            <NavigationMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <Button
-                    variant="ghost"
-                    className="h-10 w-10 px-0 text-white hover:text-white"
+            {sessionData && (
+              <NavigationMenuItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <Button
+                      variant="ghost"
+                      className="h-10 w-10 px-0 text-white hover:text-white"
+                    >
+                      <BiUser className="h-7 w-7" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    sideOffset={5}
+                    className="z-50 mr-12 min-w-[8rem] overflow-hidden rounded-md border bg-background p-1 text-popover-foreground shadow-md animate-in data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
                   >
-                    <BiUser className="h-7 w-7" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  sideOffset={5}
-                  className="z-50 mr-8 min-w-[8rem] overflow-hidden rounded-md border bg-background p-1 text-popover-foreground shadow-md animate-in data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
-                >
-                  <Link href="/login">
-                    <DropdownMenuItem className="cursor-pointer">
-                      Login
+                    <DropdownMenuItem>My Listings</DropdownMenuItem>
+                    <DropdownMenuItem>Saved Listings</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => void signOut()}>
+                      Logout
                     </DropdownMenuItem>
-                  </Link>
-                  <Link href="/login">
-                    <DropdownMenuItem className="cursor-pointer">
-                      Sign up
-                    </DropdownMenuItem>
-                  </Link>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </NavigationMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </NavigationMenuItem>
+            )}
           </NavigationMenuList>
         </NavigationMenu>
       </div>
