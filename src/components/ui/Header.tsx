@@ -26,11 +26,11 @@ export const Header = () => {
   const { data: sessionData } = useSession();
 
   return (
-    <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full backdrop-blur">
-      <div className="container flex h-14 items-center">
-        <div className="mr-4 hidden md:flex">
+    <header className="sticky top-0 z-40 w-full items-center justify-between backdrop-blur">
+      <div className="container flex h-14 items-center ">
+        <div className="mr-4 flex">
           <Link className="mr-6 flex items-center space-x-2" href="/">
-            <span className="text-xl font-bold text-white sm:inline-block">
+            <span className="text-lg font-bold text-white sm:inline-block lg:text-xl xl:text-2xl">
               JaxAnimals
             </span>
           </Link>
@@ -44,7 +44,7 @@ export const Header = () => {
                 <Button
                   onClick={() => void signIn()}
                   variant="outline"
-                  className="mr-2 border border-white text-white hover:border-white hover:text-white"
+                  className="-0 h-8 border border-white px-4 py-0 text-white hover:border-white hover:text-white md:mr-2"
                 >
                   Login
                 </Button>
