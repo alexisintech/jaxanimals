@@ -20,10 +20,14 @@ import {
 import CreateListing from "../index/CreateListing";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "~/utils/api";
+import { useRouter } from "next/router";
 
-export const Header = () => {
+export const Header = ({ loggingIn }: HeaderProps) => {
   const { theme, setTheme } = useTheme();
   const { data: sessionData } = useSession();
+  const { push, asPath } = useRouter();
+
+  const handleLogin = () => push(`/login?callbackUrl=${asPath}`);
 
   return (
     <header className="sticky top-0 z-40 w-full items-center justify-between backdrop-blur">
@@ -37,19 +41,22 @@ export const Header = () => {
         </div>
         <NavigationMenu className="flex flex-1 items-center justify-between space-x-2 sm:space-x-4 md:justify-end">
           <NavigationMenuList className="gap-1">
-            <NavigationMenuItem>
-              {sessionData ? (
-                <CreateListing />
-              ) : (
-                <Button
-                  onClick={() => void signIn()}
-                  variant="outline"
-                  className="-0 h-8 border border-white px-4 py-0 text-white hover:border-white hover:text-white md:mr-2"
-                >
-                  Login
-                </Button>
-              )}
-            </NavigationMenuItem>
+            {/* if /login, then do not show this component */}
+            {!loggingIn && (
+              <NavigationMenuItem>
+                {sessionData ? (
+                  <CreateListing />
+                ) : (
+                  <Button
+                    onClick={handleLogin}
+                    variant="outline"
+                    className="h-8 border border-white px-4 py-0 text-white hover:border-white hover:text-white md:mr-2 md:h-9 md:px-4 md:py-2"
+                  >
+                    Login
+                  </Button>
+                )}
+              </NavigationMenuItem>
+            )}
             <NavigationMenuItem>
               {theme === "dark" ? (
                 <Button
@@ -102,3 +109,7 @@ export const Header = () => {
     </header>
   );
 };
+
+interface HeaderProps {
+  loggingIn: boolean;
+}
