@@ -7,88 +7,61 @@ import { Button } from "./Button";
 import {
   NavigationMenu,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
-  navigationMenuTriggerStyle,
 } from "~/components/ui/NavigationMenu";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "~/components/ui/Dialog";
-import { Input } from "~/components/ui/Input";
-import * as Popover from "@radix-ui/react-popover";
 import { BiUser } from "react-icons/bi";
-import { Separator } from "./Separator";
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "./DropdownMenu";
+import CreateListing from "../index/CreateListing";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { api } from "~/utils/api";
+import { useRouter } from "next/router";
 
-export const Header = () => {
+export const Header = ({ loggingIn }: HeaderProps) => {
   const { theme, setTheme } = useTheme();
+  const { data: sessionData } = useSession();
+  const { push, asPath } = useRouter();
+
+  const handleLogin = () => push(`/login?callbackUrl=${asPath}`);
 
   return (
-    <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full backdrop-blur">
-      <div className="container flex h-14 items-center">
-        <div className="mr-4 hidden md:flex">
+    <header className="sticky top-0 z-40 w-full items-center justify-between backdrop-blur">
+      <div className="container flex h-14 items-center ">
+        <div className="mr-4 flex">
           <Link className="mr-6 flex items-center space-x-2" href="/">
-            <span className="text-xl font-bold text-white sm:inline-block">
+            <span className="text-lg font-bold text-white sm:inline-block lg:text-xl xl:text-2xl">
               JaxAnimals
             </span>
           </Link>
         </div>
         <NavigationMenu className="flex flex-1 items-center justify-between space-x-2 sm:space-x-4 md:justify-end">
           <NavigationMenuList className="gap-1">
-            <NavigationMenuItem>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="btn-ghost mr-2 border border-white hover:border-white">
-                    Create a listing
+            {/* if /login, then do not show this component */}
+            {!loggingIn && (
+              <NavigationMenuItem>
+                {sessionData ? (
+                  <CreateListing />
+                ) : (
+                  <Button
+                    onClick={handleLogin}
+                    variant="outline"
+                    className="h-8 border border-white px-4 py-0 text-white hover:border-white hover:text-white md:mr-2 md:h-9 md:px-4 md:py-2"
+                  >
+                    Login
                   </Button>
-                </DialogTrigger>
-                <DialogContent className="bg-base-100 text-black dark:text-white sm:max-w-[425px]">
-                  <DialogHeader>
-                    <DialogTitle>Create a new listing</DialogTitle>
-                    <DialogDescription>lorem description</DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <label htmlFor="name" className="text-right">
-                        Name
-                      </label>
-                      <Input
-                        id="name"
-                        value="Pedro Duarte"
-                        className="col-span-3"
-                      />
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <label htmlFor="username" className="text-right">
-                        Username
-                      </label>
-                      <Input
-                        id="username"
-                        value="@peduarte"
-                        className="col-span-3"
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button
-                      type="submit"
-                      className="text-black hover:bg-black hover:bg-opacity-5 dark:text-white dark:hover:bg-white"
-                    >
-                      Save changes
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </NavigationMenuItem>
+                )}
+              </NavigationMenuItem>
+            )}
             <NavigationMenuItem>
               {theme === "dark" ? (
                 <Button
-                  className="btn-ghost h-10 w-10 px-0 text-white"
+                  variant="ghost"
+                  className="h-10 w-10 px-0 text-white"
                   onClick={() => setTheme("light")}
                   title="Switch to light mode"
                 >
@@ -96,7 +69,8 @@ export const Header = () => {
                 </Button>
               ) : (
                 <Button
-                  className="btn-ghost h-10 w-10 px-0 text-white"
+                  variant="ghost"
+                  className="h-10 w-10 px-0 text-white hover:text-white"
                   onClick={() => setTheme("dark")}
                   title="Switch to dark mode"
                 >
@@ -104,34 +78,38 @@ export const Header = () => {
                 </Button>
               )}
             </NavigationMenuItem>
-            <NavigationMenuItem>
-              <div className="dropdown-end dropdown">
-                <Button className="btn-ghost h-10 w-10 px-0">
-                  <BiUser className="h-7 w-7" />
-                </Button>
-                {/* <ul
-                  tabIndex={0}
-                  className="dropdown-content menu rounded-box menu-compact bg-base-100 mt-3 w-52 p-2 shadow"
-                >
-                  <li>
-                    <a>My Listings</a>
-                  </li>
-                  <li>
-                    <a>Saved Listings</a>
-                  </li>
-                  <li>
-                    <a>Settings</a>
-                  </li>
-                  <Separator className="my-2 bg-slate-400 opacity-50 dark:bg-slate-400" />
-                  <li>
-                    <a>Logout</a>
-                  </li>
-                </ul> */}
-              </div>
-            </NavigationMenuItem>
+            {sessionData && (
+              <NavigationMenuItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <Button
+                      variant="ghost"
+                      className="h-10 w-10 px-0 text-white hover:text-white"
+                    >
+                      <BiUser className="h-7 w-7" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    sideOffset={5}
+                    className="z-50 mr-12 min-w-[8rem] overflow-hidden rounded-md border bg-background p-1 text-popover-foreground shadow-md animate-in data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
+                  >
+                    <DropdownMenuItem>My Listings</DropdownMenuItem>
+                    <DropdownMenuItem>Saved Listings</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => void signOut()}>
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </NavigationMenuItem>
+            )}
           </NavigationMenuList>
         </NavigationMenu>
       </div>
     </header>
   );
 };
+
+interface HeaderProps {
+  loggingIn: boolean;
+}

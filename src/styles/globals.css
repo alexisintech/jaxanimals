@@ -75,7 +75,7 @@
 
 @layer base {
   body {
-    @apply bg-background text-foreground;
+    @apply bg-gradient-to-br from-primary to-secondary bg-no-repeat h-screen;
   }
 }
 
