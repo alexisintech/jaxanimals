@@ -1,8 +1,11 @@
+import type { GetServerSidePropsContext } from "next";
 import { type NextPage } from "next";
+import { getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { Header } from "~/components/ui/Header";
+import { authOptions } from "~/server/auth";
 import { api } from "~/utils/api";
 
 const Settings: NextPage = () => {
@@ -36,3 +39,20 @@ const Settings: NextPage = () => {
 };
 
 export default Settings;
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+}
