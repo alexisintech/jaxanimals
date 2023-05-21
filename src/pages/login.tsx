@@ -12,7 +12,13 @@ const LoginPage: NextPage = () => {
   const { push } = useRouter();
 
   if (status === "loading") {
-    return <h1>Checking authentication...</h1>;
+    return (
+      <main className="container flex min-h-screen flex-col items-center justify-center px-4">
+        <h1 className="text-5xl font-extrabold text-white">
+          Checking authentication...
+        </h1>
+      </main>
+    );
   }
 
   if (sessionData) {
