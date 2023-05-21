@@ -41,12 +41,7 @@ const CreateListing = () => {
           </div>
         </div>
         <DialogFooter>
-          <Button
-            type="submit"
-            className="text-black hover:bg-black hover:bg-opacity-5 dark:text-white dark:hover:bg-white"
-          >
-            Save changes
-          </Button>
+          <Button type="submit">Post</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

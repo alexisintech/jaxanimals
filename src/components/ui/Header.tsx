@@ -17,15 +17,14 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "./DropdownMenu";
-import CreateListing from "../index/CreateListing";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { api } from "~/utils/api";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 export const Header = ({ loggingIn }: HeaderProps) => {
   const { theme, setTheme } = useTheme();
   const { data: sessionData } = useSession();
   const { push, asPath } = useRouter();
+  const user = sessionData?.user;
 
   const handleLogin = () => push(`/login?callbackUrl=${asPath}`);
 
@@ -45,7 +44,14 @@ export const Header = ({ loggingIn }: HeaderProps) => {
             {!loggingIn && (
               <NavigationMenuItem>
                 {sessionData ? (
-                  <CreateListing />
+                  <Link href="/create">
+                    <Button
+                      variant="outline"
+                      className="mr-2 border border-white text-white hover:border-white hover:text-white"
+                    >
+                      Create a listing
+                    </Button>
+                  </Link>
                 ) : (
                   <Button
                     onClick={handleLogin}
@@ -60,6 +66,7 @@ export const Header = ({ loggingIn }: HeaderProps) => {
             <NavigationMenuItem>
               {theme === "dark" ? (
                 <Button
+                  aria-label="Switch to light mode"
                   variant="ghost"
                   className="h-10 w-10 px-0 text-white"
                   onClick={() => setTheme("light")}
@@ -69,6 +76,7 @@ export const Header = ({ loggingIn }: HeaderProps) => {
                 </Button>
               ) : (
                 <Button
+                  aria-label="Switch to dark mode"
                   variant="ghost"
                   className="h-10 w-10 px-0 text-white hover:text-white"
                   onClick={() => setTheme("dark")}
@@ -78,11 +86,12 @@ export const Header = ({ loggingIn }: HeaderProps) => {
                 </Button>
               )}
             </NavigationMenuItem>
-            {sessionData && (
+            {user && (
               <NavigationMenuItem>
                 <DropdownMenu>
                   <DropdownMenuTrigger>
                     <Button
+                      aria-label="User information"
                       variant="ghost"
                       className="h-10 w-10 px-0 text-white hover:text-white"
                     >
@@ -91,10 +100,13 @@ export const Header = ({ loggingIn }: HeaderProps) => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     sideOffset={5}
-                    className="z-50 mr-12 min-w-[8rem] overflow-hidden rounded-md border bg-background p-1 text-popover-foreground shadow-md animate-in data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
+                    className="z-50 mr-10 min-w-[8rem] overflow-hidden rounded-md border bg-background p-1 text-popover-foreground shadow-md animate-in data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
                   >
                     <DropdownMenuItem>My Listings</DropdownMenuItem>
                     <DropdownMenuItem>Saved Listings</DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link href={`/user/${user.id}`}>Settings</Link>
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => void signOut()}>
                       Logout
