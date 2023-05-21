@@ -39,7 +39,7 @@ const LoginPage: NextPage = () => {
       </Head>
       <Header loggingIn={true} />
       <main className="text-primary-content -mt-[4rem] grid h-screen place-items-center items-center pt-20">
-        <div className="container flex flex-col items-center justify-center px-4 ">
+        <div className="container flex flex-col items-center justify-center px-4 text-white">
           <p className="mb-2 text-5xl font-extrabold">
             We currently only support Google log ins.
           </p>
