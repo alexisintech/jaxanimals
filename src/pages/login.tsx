@@ -1,4 +1,4 @@
-import { type NextPage } from "next";
+import { GetServerSidePropsContext, type NextPage } from "next";
 import Head from "next/head";
 import { Header } from "~/components/ui/Header";
 import { BsGoogle } from "react-icons/bs";
@@ -6,6 +6,8 @@ import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { Button } from "~/components/ui/Button";
 import Google from "next-auth/providers/google";
+import { getServerSession } from "next-auth";
+import { authOptions } from "~/server/auth";
 
 const LoginPage: NextPage = () => {
   const { data: sessionData, status } = useSession();
@@ -19,14 +21,6 @@ const LoginPage: NextPage = () => {
         </h1>
       </main>
     );
-  }
-
-  if (sessionData) {
-    setTimeout(() => {
-      () => void push("/");
-    }, 5000);
-
-    return <h1>You are already signed in!</h1>;
   }
 
   const handleLogin = async () => {
@@ -69,3 +63,20 @@ const LoginPage: NextPage = () => {
 };
 
 export default LoginPage;
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+}
