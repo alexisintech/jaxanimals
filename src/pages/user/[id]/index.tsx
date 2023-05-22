@@ -3,10 +3,13 @@ import { getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { Button } from "~/components/ui/Button";
 import Header from "~/components/ui/Header";
 import { Input } from "~/components/ui/Input";
 import { authOptions } from "~/server/auth";
 import { api } from "~/utils/api";
+
+// TO-DO: Add a form to update user info
 
 const Settings: NextPage = () => {
   const { data: session, status } = useSession();
@@ -52,7 +55,7 @@ const Settings: NextPage = () => {
       </Head>
       <Header loggingIn={false} />
       <main className="container flex flex-col items-center justify-center py-20 text-white">
-        <div className="glassmorphism flex flex-col rounded border border-background/20 bg-background/25 px-10 py-20">
+        <div className="glassmorphism flex w-1/2 flex-col gap-5 rounded border border-background/20 bg-background/25 px-10 py-20">
           {userInfo.map((data, index) => (
             <div key={index}>
               <label htmlFor={data.title} className="text-xl font-extrabold">
@@ -81,6 +84,9 @@ const Settings: NextPage = () => {
               )}
             </div>
           ))}
+          <Button type="submit" className="mt-10">
+            Save
+          </Button>
         </div>
       </main>
     </>
