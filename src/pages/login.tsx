@@ -1,6 +1,6 @@
 import { GetServerSidePropsContext, type NextPage } from "next";
 import Head from "next/head";
-import { Header } from "~/components/ui/Header";
+import Header from "~/components/ui/Header";
 import { BsGoogle } from "react-icons/bs";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";

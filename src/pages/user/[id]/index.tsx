@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { Header } from "~/components/ui/Header";
+import Header from "~/components/ui/Header";
 import { authOptions } from "~/server/auth";
 import { api } from "~/utils/api";
 
