@@ -8,12 +8,36 @@ import { authOptions } from "~/server/auth";
 import { api } from "~/utils/api";
 
 const Settings: NextPage = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const id = useRouter().query.id as string;
 
-  // TO-DO: Set up a redirect to the login page if the user is not logged in
+  if (status === "loading") {
+  }
 
   const { data: user } = api.example.getUser.useQuery({ id });
+
+  const userInfo = [
+    {
+      title: "Name",
+      info: user?.name,
+    },
+    {
+      title: "Email",
+      info: user?.email,
+    },
+    {
+      title: "Phone Number",
+      info: user?.phone,
+    },
+    {
+      title: "Facebook",
+      info: user?.facebook,
+    },
+    {
+      title: "Instagram",
+      info: user?.instagram,
+    },
+  ];
 
   return (
     <>
@@ -27,26 +51,25 @@ const Settings: NextPage = () => {
       </Head>
       <Header loggingIn={false} />
       <main className="container flex flex-col items-center justify-center px-4">
-        <div className="mb-2 flex gap-2 text-3xl font-extrabold">
-          <p className="opacity-80">Name</p>
-          <p>{user?.name}</p>
-        </div>
-        <div className="mb-2 flex gap-2 text-3xl font-extrabold">
-          <p className="opacity-80">Email</p>
-          <p>{user?.email}</p>
-        </div>
-        <div className="mb-2 flex gap-2 text-3xl font-extrabold">
-          <p className="opacity-80">Phone</p>
-          <p>{user?.phone}</p>
-        </div>
-        <div className="mb-2 flex gap-2 text-3xl font-extrabold">
-          <p className="opacity-80">Facebook</p>
-          <p>{user?.facebook}</p>
-        </div>
-        <div className="mb-2 flex gap-2 text-3xl font-extrabold">
-          <p className="opacity-80">Instagram</p>
-          <p>{user?.instagram}</p>
-        </div>
+        {userInfo.map((data, index) => {
+          return (
+            <div
+              key={index}
+              className="mb-2 flex gap-2 text-3xl font-extrabold"
+            >
+              <p>{data.title}:</p>
+              <p
+                className={
+                  data.title === "Name" || "Email"
+                    ? "opacity-80"
+                    : "opacity-100"
+                }
+              >
+                {data.info}
+              </p>
+            </div>
+          );
+        })}
       </main>
     </>
   );
