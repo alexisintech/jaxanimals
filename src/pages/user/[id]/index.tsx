@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Header from "~/components/ui/Header";
+import { Input } from "~/components/ui/Input";
 import { authOptions } from "~/server/auth";
 import { api } from "~/utils/api";
 
@@ -19,23 +20,23 @@ const Settings: NextPage = () => {
   const userInfo = [
     {
       title: "Name",
-      info: user?.name,
+      info: user?.name || "",
     },
     {
       title: "Email",
-      info: user?.email,
+      info: user?.email || "",
     },
     {
-      title: "Phone Number",
-      info: user?.phone,
+      title: "Phone",
+      info: user?.phone || "",
     },
     {
       title: "Facebook",
-      info: user?.facebook,
+      info: user?.facebook || "",
     },
     {
       title: "Instagram",
-      info: user?.instagram,
+      info: user?.instagram || "",
     },
   ];
 
@@ -50,26 +51,26 @@ const Settings: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header loggingIn={false} />
-      <main className="container flex flex-col items-center justify-center px-4">
-        {userInfo.map((data, index) => {
-          return (
-            <div
-              key={index}
-              className="mb-2 flex gap-2 text-3xl font-extrabold"
-            >
-              <p>{data.title}:</p>
-              <p
-                className={
-                  data.title === "Name" || "Email"
-                    ? "opacity-80"
-                    : "opacity-100"
-                }
-              >
-                {data.info}
-              </p>
-            </div>
-          );
-        })}
+      <main className="container flex flex-col items-center justify-center py-20">
+        <div className="bg-blur-sm flex flex-col rounded border-solid bg-background px-10 py-20 shadow-sm">
+          {userInfo.map((data, index) => {
+            return (
+              <div key={index}>
+                <label
+                  htmlFor={data.title}
+                  className="text-xl font-extrabold text-primary"
+                >
+                  {data.title}
+                </label>
+                <Input
+                  className="cursor-text rounded border border-solid bg-primary/20 text-2xl font-light !transition-colors !duration-300 hover:bg-primary/30 dark:border-primary/20 dark:bg-primary/10 dark:hover:border-primary/50"
+                  value={data.info}
+                  name={data.title}
+                />
+              </div>
+            );
+          })}
+        </div>
       </main>
     </>
   );

@@ -10,7 +10,7 @@ import { Input } from "../ui/Input";
 
 const Hero = () => {
   return (
-    <main className="text-primary-content -mt-[4rem] grid h-screen place-items-center items-center bg-gradient-to-br from-primary to-secondary pt-20">
+    <main className="text-primary-content -mt-[4rem] grid h-screen place-items-center items-center pt-20">
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
         <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
           Let's find your furbaby.

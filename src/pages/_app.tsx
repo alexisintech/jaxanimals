@@ -28,7 +28,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
       </style>
       <SessionProvider session={session}>
         <ThemeProvider>
-          <Component {...pageProps} />
+          <div className="container mx-auto flex bg-gradient-to-br from-primary to-secondary">
+            <div className="min-h-screen flex-grow">
+              <Component {...pageProps} />
+            </div>
+          </div>
         </ThemeProvider>
       </SessionProvider>
     </>
