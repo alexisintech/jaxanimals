@@ -20,7 +20,7 @@ import {
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
-export const Header = ({ loggingIn }: HeaderProps) => {
+const Header = ({ loggingIn }: HeaderProps) => {
   const { theme, setTheme } = useTheme();
   const { data: sessionData } = useSession();
   const { push, asPath } = useRouter();
@@ -125,3 +125,5 @@ export const Header = ({ loggingIn }: HeaderProps) => {
 interface HeaderProps {
   loggingIn: boolean;
 }
+
+export default Header;
