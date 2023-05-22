@@ -73,8 +73,14 @@
   }
 }
 
-@layer components {
+@layer base {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer base {
+  .glassmorphism {
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    }
 }

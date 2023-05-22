@@ -51,25 +51,36 @@ const Settings: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header loggingIn={false} />
-      <main className="container flex flex-col items-center justify-center py-20">
-        <div className="bg-blur-sm flex flex-col rounded border-solid bg-background px-10 py-20 shadow-sm">
-          {userInfo.map((data, index) => {
-            return (
-              <div key={index}>
-                <label
-                  htmlFor={data.title}
-                  className="text-xl font-extrabold text-primary"
-                >
-                  {data.title}
-                </label>
+      <main className="container flex flex-col items-center justify-center py-20 text-white">
+        <div className="glassmorphism flex flex-col rounded border border-background/20 bg-background/25 px-10 py-20">
+          {userInfo.map((data, index) => (
+            <div key={index}>
+              <label htmlFor={data.title} className="text-xl font-extrabold">
+                {data.title}
+              </label>
+              {data.title === "Name" ? (
                 <Input
-                  className="cursor-text rounded border border-solid bg-primary/20 text-2xl font-light !transition-colors !duration-300 hover:bg-primary/30 dark:border-primary/20 dark:bg-primary/10 dark:hover:border-primary/50"
+                  disabled
+                  className="cursor-text rounded border-solid border-background/30 bg-transparent text-2xl font-light !transition-colors !duration-300 hover:border-background/70 disabled:border-background/20 disabled:hover:bg-transparent"
                   value={data.info}
                   name={data.title}
                 />
-              </div>
-            );
-          })}
+              ) : data.title === "Email" ? (
+                <Input
+                  disabled
+                  className="cursor-text rounded border-solid border-background/30 bg-transparent text-2xl font-light !transition-colors !duration-300 hover:border-background/70 disabled:border-background/20 disabled:hover:bg-transparent"
+                  value={data.info}
+                  name={data.title}
+                />
+              ) : (
+                <Input
+                  className="cursor-text rounded border-solid border-background/30 bg-transparent text-2xl font-light !transition-colors !duration-300 hover:border-background/70 disabled:border-background/20 disabled:hover:bg-transparent"
+                  value={data.info}
+                  name={data.title}
+                />
+              )}
+            </div>
+          ))}
         </div>
       </main>
     </>
