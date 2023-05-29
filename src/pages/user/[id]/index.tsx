@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { authOptions } from "~/server/auth";
 
@@ -23,6 +22,8 @@ import {
 import { Input } from "~/components/ui/Input";
 import { Separator } from "~/components/ui/Separator";
 import { Label } from "~/components/ui/Label";
+import { useForm, useFormState } from "react-hook-form";
+import { useState } from "react";
 
 // TO-DO: try phone .regex(^[0-9]+$)
 export const updateUserSchema = z.object({
@@ -136,14 +137,23 @@ const Settings: NextPage = () => {
                             {...field}
                             placeholder={user?.phone || ""}
                             maxLength={10}
-                            className="placeholder:text-foreground"
+                            className={
+                              methods.formState.errors.phone
+                                ? "border-red-600 placeholder:text-foreground hover:border-red-600"
+                                : "placeholder:text-foreground"
+                            }
                           />
                         </FormControl>
-                        <FormDescription className="italic opacity-50">
+                        <FormDescription
+                          className={
+                            methods.formState.errors.phone
+                              ? "italic text-red-600 opacity-50"
+                              : "italic opacity-50"
+                          }
+                        >
                           Phone numbers must have no symbols or spaces and must
                           include the area code.
                         </FormDescription>
-                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -161,9 +171,14 @@ const Settings: NextPage = () => {
                           <Input
                             {...field}
                             placeholder={user?.facebook || ""}
-                            className="placeholder:text-foreground"
+                            className={
+                              methods.formState.errors.facebook
+                                ? "border-red-600 placeholder:text-foreground hover:border-red-600"
+                                : "placeholder:text-foreground"
+                            }
                           />
                         </FormControl>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -181,7 +196,11 @@ const Settings: NextPage = () => {
                           <Input
                             {...field}
                             placeholder={user?.instagram || ""}
-                            className="placeholder:text-foreground"
+                            className={
+                              methods.formState.errors.instagram
+                                ? "border-red-600 placeholder:text-foreground hover:border-red-600"
+                                : "placeholder:text-foreground"
+                            }
                           />
                         </FormControl>
                         <FormMessage />
@@ -189,8 +208,11 @@ const Settings: NextPage = () => {
                     )}
                   />
                 </div>
+                {/* TO-DO: get isSubmititng to work :(  */}
                 <Button type="submit" className="mt-5 w-full">
-                  Save
+                  {methods.formState.isSubmitting
+                    ? "Saving your changes..."
+                    : "Save"}
                 </Button>
               </div>
             </form>
