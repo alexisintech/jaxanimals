@@ -30,7 +30,10 @@ const Header = ({ loggingIn }: HeaderProps) => {
   const handleLogin = () => push(`/login?callbackUrl=${asPath}`);
 
   return (
-    <header className="suppressHydrationWarning sticky top-0 z-40 w-full items-center justify-between backdrop-blur">
+    <header
+      suppressHydrationWarning
+      className="sticky top-0 z-40 w-full items-center justify-between backdrop-blur"
+    >
       <div className="container flex h-14 items-center ">
         <div className="mr-4 flex">
           <Link className="mr-6 flex items-center space-x-2" href="/">
