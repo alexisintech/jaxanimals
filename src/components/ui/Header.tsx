@@ -19,6 +19,7 @@ import {
 } from "./DropdownMenu";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import { cn } from "~/utils/cn";
 
 const Header = ({ loggingIn }: HeaderProps) => {
   const { theme, setTheme } = useTheme();
@@ -89,14 +90,13 @@ const Header = ({ loggingIn }: HeaderProps) => {
             {user && (
               <NavigationMenuItem>
                 <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <Button
-                      aria-label="User information"
-                      variant="ghost"
-                      className="hover:dark-foreground h-10 w-10 px-0 text-background hover:text-background dark:text-foreground"
-                    >
-                      <BiUser className="h-7 w-7" />
-                    </Button>
+                  <DropdownMenuTrigger
+                    className={cn(
+                      "inline-flex h-10 w-10 items-center justify-center rounded-md bg-transparent px-0 text-background ring-offset-transparent transition-colors hover:bg-slate-50/20 hover:text-background focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-50 dark:text-foreground"
+                    )}
+                    aria-label="User information rounded"
+                  >
+                    <BiUser className="h-7 w-7" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     sideOffset={5}
