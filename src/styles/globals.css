@@ -2,32 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
-/* foreground means text color */
- 
+/* Theming */
+/* foreground means text color */ 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 300 17% 91%;
     --foreground: 222.2 47.4% 11.2%;
  
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
  
-    --popover: 0 0% 100%;
+    --popover: 300 17% 91%;
     --popover-foreground: 222.2 47.4% 11.2%;
  
-    --card: 0 0% 100%;
+    --card: 300 17% 91%;
     --card-foreground: 222.2 47.4% 11.2%;
  
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
  
-    --primary: 259 94% 51%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 245 88% 62%;
+    --primary-foreground: 300 17% 91%;
  
     --secondary: 314 100% 47%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary-foreground: 300 17% 91%;
  
-    --accent: 210 40% 96.1%;
+    --accent: 262 72% 68%;
     --accent-foreground: 222.2 47.4% 11.2%;
  
     --destructive: 0 100% 50%;
@@ -39,29 +39,30 @@
   }
  
   .dark, [data-theme='dark'] {
-    /* --background: 225, 6%, 13%; */
-    --background: 0 0% 23%;
-    --foreground: 184 41% 93%;
+    /* --background: 0 0% 23%; */
+    /* --background: 262 80% 22%; */
+    --background: 262 80% 18%;
+    --foreground: 300 17% 91%;
  
-    --muted: 225 4% 20%;
-    --muted-foreground: 184 41% 93%;
+    --muted: 262 81% 35%;
+    --muted-foreground: 300 17% 91%;
  
-    --popover: 0 0% 23%;
-    --popover-foreground: 184 41% 93%;
+    --popover: 262 80% 18%;
+    --popover-foreground: 300 17% 91%;
  
-    --card: 0 0% 23%;
-    --card-foreground: 184 41% 93%;
+    --card: 262 80% 18%;
+    --card-foreground: 300 17% 91%;
  
-    --border: 0 0% 38%;
-    --input: 0 0% 38%;
+    --border: 262 72% 68%;
+    --input: 262 72% 68%;
  
-    --primary: 262 80% 50%;
+    --primary: 245 88% 62%;
     --primary-foreground: 222.2 47.4% 1.2%;
  
     --secondary: 316 70% 50%;
     --secondary-foreground: 210 40% 98%;
  
-    --accent: 0 0% 38%;
+    --accent: 262 72% 68%;
     --accent-foreground: 210 40% 98%;
  
     --destructive: 0 63% 31%;
@@ -73,7 +74,18 @@
   }
 }
 
+/* Custom styles */
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  html::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  html::-webkit-scrollbar-thumb {
+    @apply bg-accent;
+  }
   body {
     @apply bg-background text-foreground;
   }

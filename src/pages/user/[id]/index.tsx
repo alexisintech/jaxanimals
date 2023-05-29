@@ -92,8 +92,8 @@ const Settings: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header loggingIn={false} />
-      <main className="container flex flex-col items-center justify-center py-20 text-white">
-        <div className="glassmorphism flex w-1/2 flex-col rounded border border-background/20 bg-background/25 pb-20 pt-10">
+      <main className="container flex flex-col items-center justify-center py-20 text-foreground">
+        <div className="flex w-1/2 flex-col rounded border border-background/20 bg-background pb-20 pt-10">
           <div>
             <h2 className="px-10 pb-10 text-2xl font-extrabold">Profile</h2>
             <Separator className="opacity-20" />
@@ -102,85 +102,93 @@ const Settings: NextPage = () => {
           <Form {...methods}>
             <form onSubmit={onSubmit}>
               <div className="flex flex-col gap-5 px-10 pt-10">
-                <Label htmlFor="Name" className="text-xl font-extrabold">
-                  Name
-                </Label>
-                <Input
-                  disabled
-                  className="cursor-text rounded border-solid border-background/30 bg-transparent text-2xl font-light !transition-colors !duration-300 hover:border-background/70 disabled:border-background/20 disabled:hover:bg-transparent"
-                  value={user?.name || ""}
-                  name={user?.name || ""}
-                />
-                <Label htmlFor="Email" className="text-xl font-extrabold ">
-                  Email
-                </Label>
-                <Input
-                  disabled
-                  className="cursor-text rounded border-solid border-background/30 bg-transparent text-2xl font-light !transition-colors !duration-300 hover:border-background/70 disabled:border-background/20 disabled:hover:bg-transparent"
-                  value={user?.email || ""}
-                  name={user?.email || ""}
-                />
-                <FormField
-                  control={methods.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xl font-extrabold">
-                        Phone
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder={user?.phone || ""}
-                          maxLength={10}
-                          className="border-solid border-background/30 bg-transparent text-2xl font-light !transition-colors !duration-300 placeholder:text-background/100 hover:border-background/70"
-                        />
-                      </FormControl>
-                      <FormDescription className="italic text-white opacity-50">
-                        Phone numbers must have no symbols or spaces and must
-                        include the area code.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={methods.control}
-                  name="facebook"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xl font-extrabold">
-                        Facebook
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder={user?.facebook || ""}
-                          className="border-solid border-background/30 bg-transparent text-2xl font-light !transition-colors !duration-300 placeholder:text-background/100 hover:border-background/70"
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={methods.control}
-                  name="instagram"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xl font-extrabold">
-                        Instagram
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder={user?.instagram || ""}
-                          className="border-solid border-background/30 bg-transparent text-2xl font-light !transition-colors !duration-300 placeholder:text-background/100 hover:border-background/70"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="space-y-1">
+                  <Label htmlFor="Name" className="text-xl font-extrabold">
+                    Name
+                  </Label>
+                  <Input
+                    disabled
+                    value={user?.name || ""}
+                    name={user?.name || ""}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="Email" className="text-xl font-extrabold ">
+                    Email
+                  </Label>
+                  <Input
+                    disabled
+                    value={user?.email || ""}
+                    name={user?.email || ""}
+                  />
+                </div>
+                <div>
+                  <FormField
+                    control={methods.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xl font-extrabold">
+                          Phone
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder={user?.phone || ""}
+                            maxLength={10}
+                            className="placeholder:text-foreground"
+                          />
+                        </FormControl>
+                        <FormDescription className="italic opacity-50">
+                          Phone numbers must have no symbols or spaces and must
+                          include the area code.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div>
+                  <FormField
+                    control={methods.control}
+                    name="facebook"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xl font-extrabold">
+                          Facebook
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder={user?.facebook || ""}
+                            className="placeholder:text-foreground"
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div>
+                  <FormField
+                    control={methods.control}
+                    name="instagram"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xl font-extrabold">
+                          Instagram
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder={user?.instagram || ""}
+                            className="placeholder:text-foreground"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
                 <Button type="submit" className="mt-10 w-full">
                   Save
                 </Button>

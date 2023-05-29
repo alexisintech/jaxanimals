@@ -3,7 +3,6 @@ import Head from "next/head";
 import Header from "~/components/ui/Header";
 import { BsGoogle } from "react-icons/bs";
 import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import { Button } from "~/components/ui/Button";
 import Google from "next-auth/providers/google";
 import { getServerSession } from "next-auth";
@@ -11,7 +10,6 @@ import { authOptions } from "~/server/auth";
 
 const LoginPage: NextPage = () => {
   const { data: sessionData, status } = useSession();
-  const { push } = useRouter();
 
   if (status === "loading") {
     return (

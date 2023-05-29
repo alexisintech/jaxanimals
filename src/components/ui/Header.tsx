@@ -33,7 +33,7 @@ const Header = ({ loggingIn }: HeaderProps) => {
       <div className="container flex h-14 items-center ">
         <div className="mr-4 flex">
           <Link className="mr-6 flex items-center space-x-2" href="/">
-            <span className="text-lg font-bold text-white sm:inline-block lg:text-xl xl:text-2xl">
+            <span className="text-lg font-bold text-background dark:text-foreground sm:inline-block lg:text-xl xl:text-2xl">
               JaxAnimals
             </span>
           </Link>
@@ -47,7 +47,7 @@ const Header = ({ loggingIn }: HeaderProps) => {
                   <Link href="/create">
                     <Button
                       variant="outline"
-                      className="mr-2 border border-white text-white hover:border-white hover:text-white"
+                      className="mr-2 border border-background text-background hover:text-background dark:border-foreground dark:text-foreground dark:hover:text-foreground"
                     >
                       Create a listing
                     </Button>
@@ -56,7 +56,7 @@ const Header = ({ loggingIn }: HeaderProps) => {
                   <Button
                     onClick={handleLogin}
                     variant="outline"
-                    className="h-8 border border-white px-4 py-0 text-white hover:border-white hover:text-white md:mr-2 md:h-9 md:px-4 md:py-2"
+                    className="h-8 border border-background px-4 py-0 text-background hover:border-background dark:border-foreground dark:text-foreground dark:hover:border-foreground md:mr-2 md:h-9 md:px-4 md:py-2"
                   >
                     Login
                   </Button>
@@ -68,7 +68,7 @@ const Header = ({ loggingIn }: HeaderProps) => {
                 <Button
                   aria-label="Switch to light mode"
                   variant="ghost"
-                  className="h-10 w-10 px-0 text-white"
+                  className="h-10 w-10 px-0 text-background dark:text-foreground"
                   onClick={() => setTheme("light")}
                   title="Switch to light mode"
                 >
@@ -78,7 +78,7 @@ const Header = ({ loggingIn }: HeaderProps) => {
                 <Button
                   aria-label="Switch to dark mode"
                   variant="ghost"
-                  className="h-10 w-10 px-0 text-white hover:text-white"
+                  className="hover:dark-foreground h-10 w-10 px-0 text-background hover:text-background dark:text-foreground"
                   onClick={() => setTheme("dark")}
                   title="Switch to dark mode"
                 >
@@ -93,7 +93,7 @@ const Header = ({ loggingIn }: HeaderProps) => {
                     <Button
                       aria-label="User information"
                       variant="ghost"
-                      className="h-10 w-10 px-0 text-white hover:text-white"
+                      className="hover:dark-foreground h-10 w-10 px-0 text-background hover:text-background dark:text-foreground"
                     >
                       <BiUser className="h-7 w-7" />
                     </Button>
