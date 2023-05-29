@@ -24,6 +24,7 @@ import { Separator } from "~/components/ui/Separator";
 import { Label } from "~/components/ui/Label";
 import { useForm, useFormState } from "react-hook-form";
 import { useState } from "react";
+import { cn } from "~/utils/cn";
 
 // TO-DO: try phone .regex(^[0-9]+$)
 export const updateUserSchema = z.object({
@@ -137,19 +138,19 @@ const Settings: NextPage = () => {
                             {...field}
                             placeholder={user?.phone || ""}
                             maxLength={10}
-                            className={
-                              methods.formState.errors.phone
-                                ? "border-red-600 placeholder:text-foreground hover:border-red-600"
-                                : "placeholder:text-foreground"
-                            }
+                            className={cn(
+                              methods.formState.errors.phone &&
+                                "border-red-600 hover:border-red-600",
+                              "placeholder:text-foreground"
+                            )}
                           />
                         </FormControl>
                         <FormDescription
-                          className={
-                            methods.formState.errors.phone
-                              ? "italic text-red-600 opacity-50"
-                              : "italic opacity-50"
-                          }
+                          className={cn(
+                            methods.formState.errors.phone &&
+                              "border-red-600 hover:border-red-600",
+                            "placeholder:text-foreground"
+                          )}
                         >
                           Phone numbers must have no symbols or spaces and must
                           include the area code.
@@ -171,11 +172,11 @@ const Settings: NextPage = () => {
                           <Input
                             {...field}
                             placeholder={user?.facebook || ""}
-                            className={
-                              methods.formState.errors.facebook
-                                ? "border-red-600 placeholder:text-foreground hover:border-red-600"
-                                : "placeholder:text-foreground"
-                            }
+                            className={cn(
+                              methods.formState.errors.facebook &&
+                                "border-red-600 hover:border-red-600",
+                              "placeholder:text-foreground"
+                            )}
                           />
                         </FormControl>
                         <FormMessage />
@@ -196,11 +197,11 @@ const Settings: NextPage = () => {
                           <Input
                             {...field}
                             placeholder={user?.instagram || ""}
-                            className={
-                              methods.formState.errors.instagram
-                                ? "border-red-600 placeholder:text-foreground hover:border-red-600"
-                                : "placeholder:text-foreground"
-                            }
+                            className={cn(
+                              methods.formState.errors.instagram &&
+                                "border-red-600 hover:border-red-600",
+                              "placeholder:text-foreground"
+                            )}
                           />
                         </FormControl>
                         <FormMessage />
