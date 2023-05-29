@@ -189,7 +189,7 @@ const Settings: NextPage = () => {
                     )}
                   />
                 </div>
-                <Button type="submit" className="mt-10 w-full">
+                <Button type="submit" className="mt-5 w-full">
                   Save
                 </Button>
               </div>

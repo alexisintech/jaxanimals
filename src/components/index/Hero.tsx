@@ -18,7 +18,7 @@ const Hero = () => {
 
         {/* Lost or found */}
 
-        <div className="grid">
+        <div className="grid space-y-2">
           {/* Name */}
           <Input type="text" placeholder="Name" />
 
