@@ -60,13 +60,29 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
+enum ListingType {
+    LOST
+    FOUND
+}
+
+enum ListingSpecies {
+    DOG
+    CAT
+}
+
+enum ListingSex {
+    FEMALE
+    MALE
+    UNKNOWN
+}
+
 model Listing {
-    id              String  @id @default(cuid())
-    active          Boolean
+    id              String         @id @default(cuid())
+    active          Boolean        @default(true)
     img             String
-    type            String
-    species         String
-    sex             String
+    type            ListingType
+    species         ListingSpecies
+    sex             ListingSex
     name            String?
     color           String
     markings        String?

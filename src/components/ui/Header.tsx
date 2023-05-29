@@ -30,7 +30,7 @@ const Header = ({ loggingIn }: HeaderProps) => {
   const handleLogin = () => push(`/login?callbackUrl=${asPath}`);
 
   return (
-    <header className="sticky top-0 z-40 w-full items-center justify-between backdrop-blur">
+    <header className="suppressHydrationWarning sticky top-0 z-40 w-full items-center justify-between backdrop-blur">
       <div className="container flex h-14 items-center ">
         <div className="mr-4 flex">
           <Link className="mr-6 flex items-center space-x-2" href="/">
@@ -45,7 +45,7 @@ const Header = ({ loggingIn }: HeaderProps) => {
             {!loggingIn && (
               <NavigationMenuItem>
                 {sessionData ? (
-                  <Link href="/create">
+                  <Link href="/listing/create">
                     <Button
                       variant="outline"
                       className="mr-2 border border-background text-background hover:text-background dark:border-foreground dark:text-foreground dark:hover:text-foreground"

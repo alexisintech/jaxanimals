@@ -76,9 +76,6 @@
 
 /* Custom styles */
 @layer base {
-  html {
-    scroll-behavior: smooth;
-  }
   html::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -89,7 +86,12 @@
   body {
     @apply bg-background text-foreground;
   }
-  .glassmorphism {
-    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
-  }
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+html {
+  scroll-behavior: smooth;
 }
