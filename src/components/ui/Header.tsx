@@ -45,7 +45,7 @@ const Header = ({ loggingIn }: HeaderProps) => {
             {!loggingIn && (
               <NavigationMenuItem>
                 {sessionData ? (
-                  <Link href="/create">
+                  <Link href="#">
                     <Button
                       variant="outline"
                       className="mr-2 border border-background text-background hover:text-background dark:border-foreground dark:text-foreground dark:hover:text-foreground"
