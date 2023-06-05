@@ -22,8 +22,6 @@ import {
 import { Input } from "~/components/ui/Input";
 import { Separator } from "~/components/ui/Separator";
 import { Label } from "~/components/ui/Label";
-import { useForm, useFormState } from "react-hook-form";
-import { useState } from "react";
 import { cn } from "~/utils/cn";
 
 // TO-DO: try phone .regex(^[0-9]+$)
@@ -140,16 +138,15 @@ const Settings: NextPage = () => {
                             maxLength={10}
                             className={cn(
                               methods.formState.errors.phone &&
-                                "border-red-600 hover:border-red-600",
+                                "border-red-600 hover:border-red-600 focus:ring-0",
                               "placeholder:text-foreground"
                             )}
                           />
                         </FormControl>
                         <FormDescription
                           className={cn(
-                            methods.formState.errors.phone &&
-                              "border-red-600 hover:border-red-600",
-                            "placeholder:text-foreground"
+                            methods.formState.errors.phone && "text-red-600",
+                            "italic opacity-50"
                           )}
                         >
                           Phone numbers must have no symbols or spaces and must
@@ -174,12 +171,12 @@ const Settings: NextPage = () => {
                             placeholder={user?.facebook || ""}
                             className={cn(
                               methods.formState.errors.facebook &&
-                                "border-red-600 hover:border-red-600",
+                                "border-red-600 hover:border-red-600 focus:ring-0",
                               "placeholder:text-foreground"
                             )}
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="italic" />
                       </FormItem>
                     )}
                   />
@@ -199,12 +196,12 @@ const Settings: NextPage = () => {
                             placeholder={user?.instagram || ""}
                             className={cn(
                               methods.formState.errors.instagram &&
-                                "border-red-600 hover:border-red-600",
+                                "border-red-600 hover:border-red-600 focus:ring-0",
                               "placeholder:text-foreground"
                             )}
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="italic" />
                       </FormItem>
                     )}
                   />
