@@ -47,9 +47,9 @@ model User {
     accounts      Account[]
     sessions      Session[]
     listings      Listing[]
-    phone         String?   @default("")
-    facebook      String?   @default("")
-    instagram     String?   @default("")
+    phone         String?
+    facebook      String?
+    instagram     String?
 }
 
 model VerificationToken {
