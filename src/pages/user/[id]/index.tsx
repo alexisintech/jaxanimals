@@ -95,7 +95,7 @@ const Settings: NextPage = () => {
       <main className="container flex flex-col items-center justify-center py-20 text-foreground">
         <div className="flex w-1/2 flex-col rounded border border-background/20 bg-background pb-20 pt-10">
           <div>
-            <h2 className="px-10 pb-10 text-2xl font-extrabold">Profile</h2>
+            <h2 className="px-10 pb-10 text-2xl font-extrabold">Settings</h2>
             <Separator className="opacity-20" />
           </div>
 
