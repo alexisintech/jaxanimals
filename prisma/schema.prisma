@@ -61,19 +61,19 @@ model VerificationToken {
 }
 
 enum ListingType {
-    LOST
-    FOUND
+    Lost
+    Found
 }
 
 enum ListingSpecies {
-    DOG
-    CAT
+    Dog
+    Cat
 }
 
 enum ListingSex {
-    FEMALE
-    MALE
-    UNKNOWN
+    Female
+    Male
+    Unknown
 }
 
 model Listing {

@@ -1,4 +1,4 @@
-import { GetServerSidePropsContext, type NextPage } from "next";
+import { type GetServerSidePropsContext, type NextPage } from "next";
 import Head from "next/head";
 import Header from "~/components/ui/Header";
 import { BsGoogle } from "react-icons/bs";
@@ -48,7 +48,7 @@ const LoginPage: NextPage = () => {
           </p>
           <Button
             onClick={handleLogin}
-            className="mt-10 h-16 gap-2 px-16 text-2xl"
+            className="mt-10 h-16 gap-2 bg-primary/70 px-16 text-2xl shadow-md shadow-foreground/20 hover:bg-primary"
           >
             <BsGoogle />
             Sign in with Google

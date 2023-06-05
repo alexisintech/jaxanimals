@@ -31,6 +31,8 @@ import {
   SelectValue,
 } from "~/components/ui/Select";
 
+// TO-DO: enum ListingColors array of coat colors
+
 export const createListingSchema = z.object({
   // img: z.string().url(),
   type: z.nativeEnum(ListingType),
@@ -120,20 +122,13 @@ const CreateListing: NextPage = () => {
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue
-                                className="capitalize"
-                                placeholder="Lost or found..."
-                              />
+                              <SelectValue placeholder="Lost or found..." />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
                             {Object.entries(ListingType).map(([key, value]) => (
-                              <SelectItem
-                                key={key}
-                                value={value}
-                                className="capitalize"
-                              >
-                                {value.toLowerCase()}
+                              <SelectItem key={key} value={value}>
+                                {value}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -156,21 +151,14 @@ const CreateListing: NextPage = () => {
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue
-                                className="capitalize"
-                                placeholder="Choose a species..."
-                              />
+                              <SelectValue placeholder="Choose a species..." />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
                             {Object.entries(ListingSpecies).map(
                               ([key, value]) => (
-                                <SelectItem
-                                  key={key}
-                                  value={value}
-                                  className="capitalize"
-                                >
-                                  {value.toLowerCase()}
+                                <SelectItem key={key} value={value}>
+                                  {value}
                                 </SelectItem>
                               )
                             )}
@@ -187,27 +175,22 @@ const CreateListing: NextPage = () => {
                     name="sex"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Male, female, or are you unsure?</FormLabel>
+                        <FormLabel>
+                          Are they male, female, or are you unsure?
+                        </FormLabel>
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
                         >
                           <FormControl>
                             <SelectTrigger>
-                              <SelectValue
-                                className="capitalize"
-                                placeholder="Choose a sex..."
-                              />
+                              <SelectValue placeholder="Choose a sex..." />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
                             {Object.entries(ListingSex).map(([key, value]) => (
-                              <SelectItem
-                                key={key}
-                                value={value}
-                                className="capitalize"
-                              >
-                                {value.toLowerCase()}
+                              <SelectItem key={key} value={value}>
+                                {value}
                               </SelectItem>
                             ))}
                           </SelectContent>
