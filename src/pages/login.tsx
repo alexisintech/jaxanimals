@@ -1,26 +1,23 @@
-import { type NextPage } from "next";
+import { type GetServerSidePropsContext, type NextPage } from "next";
 import Head from "next/head";
-import { Header } from "~/components/ui/Header";
+import Header from "~/components/ui/Header";
 import { BsGoogle } from "react-icons/bs";
 import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import { Button } from "~/components/ui/Button";
-import Google from "next-auth/providers/google";
+import { getServerSession } from "next-auth";
+import { authOptions } from "~/server/auth";
 
 const LoginPage: NextPage = () => {
-  const { data: sessionData, status } = useSession();
-  const { push } = useRouter();
+  const { status } = useSession();
 
   if (status === "loading") {
-    return <h1>Checking authentication...</h1>;
-  }
-
-  if (sessionData) {
-    setTimeout(() => {
-      () => void push("/");
-    }, 5000);
-
-    return <h1>You are already signed in!</h1>;
+    return (
+      <main className="container flex min-h-screen flex-col items-center justify-center px-4">
+        <h1 className="text-5xl font-extrabold text-white">
+          Checking authentication...
+        </h1>
+      </main>
+    );
   }
 
   const handleLogin = async () => {
@@ -39,7 +36,7 @@ const LoginPage: NextPage = () => {
       </Head>
       <Header loggingIn={true} />
       <main className="text-primary-content -mt-[4rem] grid h-screen place-items-center items-center pt-20">
-        <div className="container flex flex-col items-center justify-center px-4 ">
+        <div className="container flex flex-col items-center justify-center px-4 text-white">
           <p className="mb-2 text-5xl font-extrabold">
             We currently only support Google log ins.
           </p>
@@ -51,7 +48,7 @@ const LoginPage: NextPage = () => {
           </p>
           <Button
             onClick={handleLogin}
-            className="mt-10 h-16 gap-2 px-16 text-2xl"
+            className="mt-10 h-16 gap-2 bg-primary/70 px-16 text-2xl shadow-md shadow-foreground/20 hover:bg-primary"
           >
             <BsGoogle />
             Sign in with Google
@@ -63,3 +60,20 @@ const LoginPage: NextPage = () => {
 };
 
 export default LoginPage;
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: { session },
+  };
+}

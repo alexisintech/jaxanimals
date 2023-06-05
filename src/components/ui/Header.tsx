@@ -17,15 +17,15 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "./DropdownMenu";
-import CreateListing from "../index/CreateListing";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { api } from "~/utils/api";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import { cn } from "~/utils/cn";
 
-export const Header = ({ loggingIn }: HeaderProps) => {
+const Header = ({ loggingIn }: HeaderProps) => {
   const { theme, setTheme } = useTheme();
   const { data: sessionData } = useSession();
   const { push, asPath } = useRouter();
+  const user = sessionData?.user;
 
   const handleLogin = () => push(`/login?callbackUrl=${asPath}`);
 
@@ -34,7 +34,7 @@ export const Header = ({ loggingIn }: HeaderProps) => {
       <div className="container flex h-14 items-center ">
         <div className="mr-4 flex">
           <Link className="mr-6 flex items-center space-x-2" href="/">
-            <span className="text-lg font-bold text-white sm:inline-block lg:text-xl xl:text-2xl">
+            <span className="text-lg font-bold text-background dark:text-foreground sm:inline-block lg:text-xl xl:text-2xl">
               JaxAnimals
             </span>
           </Link>
@@ -45,12 +45,19 @@ export const Header = ({ loggingIn }: HeaderProps) => {
             {!loggingIn && (
               <NavigationMenuItem>
                 {sessionData ? (
-                  <CreateListing />
+                  <Link href="#">
+                    <Button
+                      variant="outline"
+                      className="mr-2 border border-background text-background hover:text-background dark:border-foreground dark:text-foreground dark:hover:text-foreground"
+                    >
+                      Create a listing
+                    </Button>
+                  </Link>
                 ) : (
                   <Button
                     onClick={handleLogin}
                     variant="outline"
-                    className="h-8 border border-white px-4 py-0 text-white hover:border-white hover:text-white md:mr-2 md:h-9 md:px-4 md:py-2"
+                    className="h-8 border border-background px-4 py-0 text-background hover:border-background dark:border-foreground dark:text-foreground dark:hover:border-foreground md:mr-2 md:h-9 md:px-4 md:py-2"
                   >
                     Login
                   </Button>
@@ -60,8 +67,9 @@ export const Header = ({ loggingIn }: HeaderProps) => {
             <NavigationMenuItem>
               {theme === "dark" ? (
                 <Button
+                  aria-label="Switch to light mode"
                   variant="ghost"
-                  className="h-10 w-10 px-0 text-white"
+                  className="h-10 w-10 px-0 text-background dark:text-foreground"
                   onClick={() => setTheme("light")}
                   title="Switch to light mode"
                 >
@@ -69,8 +77,9 @@ export const Header = ({ loggingIn }: HeaderProps) => {
                 </Button>
               ) : (
                 <Button
+                  aria-label="Switch to dark mode"
                   variant="ghost"
-                  className="h-10 w-10 px-0 text-white hover:text-white"
+                  className="hover:dark-foreground h-10 w-10 px-0 text-background hover:text-background dark:text-foreground"
                   onClick={() => setTheme("dark")}
                   title="Switch to dark mode"
                 >
@@ -78,23 +87,26 @@ export const Header = ({ loggingIn }: HeaderProps) => {
                 </Button>
               )}
             </NavigationMenuItem>
-            {sessionData && (
+            {user && (
               <NavigationMenuItem>
                 <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <Button
-                      variant="ghost"
-                      className="h-10 w-10 px-0 text-white hover:text-white"
-                    >
-                      <BiUser className="h-7 w-7" />
-                    </Button>
+                  <DropdownMenuTrigger
+                    className={cn(
+                      "inline-flex h-10 w-10 items-center justify-center rounded-md bg-transparent px-0 text-background ring-offset-transparent transition-colors hover:bg-slate-50/20 hover:text-background focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-50 dark:text-foreground"
+                    )}
+                    aria-label="User information rounded"
+                  >
+                    <BiUser className="h-7 w-7" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     sideOffset={5}
-                    className="z-50 mr-12 min-w-[8rem] overflow-hidden rounded-md border bg-background p-1 text-popover-foreground shadow-md animate-in data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
+                    className="z-50 mr-10 min-w-[8rem] overflow-hidden rounded-md border bg-background p-1 text-popover-foreground shadow-md animate-in data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
                   >
                     <DropdownMenuItem>My Listings</DropdownMenuItem>
                     <DropdownMenuItem>Saved Listings</DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link href={`/user/${user.id}`}>Settings</Link>
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => void signOut()}>
                       Logout
@@ -113,3 +125,5 @@ export const Header = ({ loggingIn }: HeaderProps) => {
 interface HeaderProps {
   loggingIn: boolean;
 }
+
+export default Header;

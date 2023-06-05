@@ -1,24 +1,22 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-
 import Header from "~/components/ui/Header";
-import Hero from "~/components/index/Hero";
 
-const Home: NextPage = () => {
+const MyListings: NextPage = () => {
   return (
     <>
       <Head>
-        <title>JaxAnimals</title>
+        <title>My Listings | JaxAnimals</title>
         <meta
           name="description"
-          content="Browse listings of the lost and found pets of Jacksonville, FL"
+          content="View all of the listings that you have created on JaxAnimals"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header loggingIn={false} />
-      <Hero />
+      <h1>All my listings</h1>
     </>
   );
 };
 
-export default Home;
+export default MyListings;

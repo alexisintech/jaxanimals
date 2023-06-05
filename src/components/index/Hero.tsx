@@ -8,17 +8,17 @@ import {
 } from "~/components/ui/Select";
 import { Input } from "../ui/Input";
 
-export const Hero = () => {
+const Hero = () => {
   return (
-    <main className="text-primary-content -mt-[4rem] grid h-screen place-items-center items-center bg-gradient-to-br from-primary to-secondary pt-20">
-      <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-        <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
+    <main className="grid h-screen items-center">
+      <div className="container flex flex-col items-center justify-center gap-12">
+        <h1 className="text-7xl font-extrabold tracking-tight text-background dark:text-foreground">
           Let's find your furbaby.
         </h1>
 
         {/* Lost or found */}
 
-        <div className="grid">
+        <div className="grid space-y-2">
           {/* Name */}
           <Input type="text" placeholder="Name" />
 
@@ -60,3 +60,5 @@ export const Hero = () => {
     </main>
   );
 };
+
+export default Hero;
