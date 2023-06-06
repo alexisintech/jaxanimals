@@ -1,0 +1,17 @@
+export const coatColors: string[] = [
+  "Black",
+  "Brown",
+  "Chestnut",
+  "Gray",
+  "White",
+  "Tan",
+  "Orange",
+  "Gold",
+  "Red",
+  "Cream",
+  "Brindle",
+  "Striped",
+  "Merle",
+  "Tortoiseshell",
+  "Calico",
+];
