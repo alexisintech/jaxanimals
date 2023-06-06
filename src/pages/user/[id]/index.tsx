@@ -7,6 +7,7 @@ import * as z from "zod";
 import { authOptions } from "~/server/auth";
 
 import { api } from "~/utils/api";
+import { cn } from "~/utils/cn";
 import { useZodForm } from "~/utils/zod-form";
 import { Button } from "~/components/ui/Button";
 import Header from "~/components/ui/Header";
@@ -22,7 +23,6 @@ import {
 import { Input } from "~/components/ui/Input";
 import { Separator } from "~/components/ui/Separator";
 import { Label } from "~/components/ui/Label";
-import { cn } from "~/utils/cn";
 
 // TO-DO: try phone .regex(^[0-9]+$)
 export const updateUserSchema = z.object({
@@ -176,7 +176,7 @@ const Settings: NextPage = () => {
                             )}
                           />
                         </FormControl>
-                        <FormMessage className="italic" />
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -201,7 +201,7 @@ const Settings: NextPage = () => {
                             )}
                           />
                         </FormControl>
-                        <FormMessage className="italic" />
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
