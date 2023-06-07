@@ -1,5 +1,3 @@
-"use client";
-
 import { ListingType, ListingSpecies, ListingSex } from "@prisma/client";
 import { type GetServerSidePropsContext, type NextPage } from "next";
 import { getServerSession } from "next-auth";
@@ -7,26 +5,15 @@ import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { z } from "zod";
 import { Controller } from "react-hook-form";
-import createCache from "@emotion/cache";
-import { CacheProvider } from "@emotion/react";
 import { authOptions } from "~/server/auth";
 
 import { api } from "~/utils/api";
 import { useZodForm } from "~/utils/zod-form";
-import { TCoatColors, coatColors } from "~/utils/coatColors";
+import { coatColors } from "~/utils/coatColors";
 import { cn } from "~/utils/cn";
 
 import { Button } from "~/components/ui/Button";
 import Header from "~/components/ui/Header";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/ui/Form";
 import { Input } from "~/components/ui/Input";
 import { Separator } from "~/components/ui/Separator";
 import { Label } from "~/components/ui/Label";
@@ -34,53 +21,40 @@ import {
   Select as ShadSelect,
   SelectContent,
   SelectItem,
-  SelectScrollDownButton,
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/Select";
 
+// react-select shit
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
-import { useMemo } from "react";
 
 const animatedComponents = makeAnimated();
 
-// TO-DO: enum ListingColors array of coat colors
-
-export const createListingSchema = z.object({
-  // img: z.string().url(),
-  type: z.nativeEnum(ListingType),
-  species: z.nativeEnum(ListingSpecies),
-  sex: z.nativeEnum(ListingSex),
-  name: z.string().optional(),
-  color: z.array(z.string()).optional(),
-  // markings: z.string().optional(),
-  // uniqueAttribute: z.string().optional(),
-  // location: z.string(),
-});
-
-// This ensures that Emotion's styles are inserted before Tailwind's styles so that Tailwind classes have precedence over Emotion
-const EmotionCacheProvider = ({ children }: { children: React.ReactNode }) => {
-  const cache = useMemo(
-    () =>
-      createCache({
-        key: "with-tailwind",
-        insertionPoint: document.querySelector("title")!,
-      }),
-    []
-  );
-
-  return <CacheProvider value={cache}>{children}</CacheProvider>;
-};
-
 const controlStyles = {
-  base: "h-10 border border-accent/30 bg-background px-3 py-2 text-sm !transition-colors !duration-300 hover:border-accent dark:bg-background rounded",
+  base: "border border-accent/30 bg-background text-sm !transition-colors !duration-300 hover:border-accent dark:bg-background rounded",
   focus: "ring-1 ring-ring outline-none  hover:border-accent",
   nonFocus: "border-accent/30 hover:border-accent",
 };
 const selectInputStyles =
   "text-red-600 !hover:outline-none !hover:border-none !focus:outline-none !focus:border-none";
 //"h-10 border border-accent/30 bg-background px-3 py-2 text-sm ring-offset-transparent !transition-colors !duration-300 placeholder:text-muted-foreground hover:border-accent focus:outline-none focus:ring-1 focus:ring-ring focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-background"
+
+// Validate form with Zod
+export const createListingSchema = z.object({
+  // img: z.string().url(),
+  type: z.nativeEnum(ListingType),
+  species: z.nativeEnum(ListingSpecies),
+  sex: z.nativeEnum(ListingSex),
+  name: z.string().optional(),
+  color: z.array(z.string()),
+  markings: z.string().optional(),
+  uniqueAttribute: z.string().optional(),
+  location: z.string().nonempty({
+    message:
+      "Please enter a location. It can be as simple as a zipcode, street name, or address of a nearby landmark.",
+  }),
+});
 
 const CreateListing: NextPage = () => {
   const { data: session, status } = useSession();
@@ -170,7 +144,6 @@ const CreateListing: NextPage = () => {
                     </ShadSelect>
                   )}
                 />
-
                 <p className="italic text-red-600">
                   {methods.formState.errors?.type?.message}
                 </p>
@@ -234,9 +207,46 @@ const CreateListing: NextPage = () => {
                     </ShadSelect>
                   )}
                 />
-
                 <p className="italic text-red-600">
                   {methods.formState.errors?.sex?.message}
+                </p>
+              </div>
+              <div>
+                <Label>What color is their coat?</Label>
+                <Controller
+                  control={methods.control}
+                  name="color"
+                  render={({ field: { onChange, value, name, ref } }) => (
+                    <Select
+                      isMulti
+                      ref={ref}
+                      name={name}
+                      options={coatColors}
+                      closeMenuOnSelect={false}
+                      components={animatedComponents}
+                      value={coatColors.filter((el) =>
+                        value?.includes(el.value)
+                      )}
+                      onChange={(val) => onChange(val.map((c) => c.value))}
+                      // className={cn(
+                      //   methods.formState.errors.type && "border-red-600",
+                      //   "h-10 border border-accent/30 bg-background px-3 py-2 text-sm ring-offset-transparent !transition-colors !duration-300 placeholder:text-muted-foreground hover:border-accent focus:outline-none focus:ring-1 focus:ring-ring focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-background"
+                      // )}
+                      classNames={{
+                        control: ({ isFocused }) =>
+                          cn(
+                            isFocused
+                              ? controlStyles.focus
+                              : controlStyles.nonFocus,
+                            controlStyles.base
+                          ),
+                        input: () => selectInputStyles,
+                      }}
+                    />
+                  )}
+                />
+                <p className="italic text-red-600">
+                  {methods.formState.errors?.color?.message}
                 </p>
               </div>
               <div>
@@ -258,44 +268,55 @@ const CreateListing: NextPage = () => {
                 </p>
               </div>
               <div>
-                <Label>What color is their coat?</Label>
-                <Controller
-                  control={methods.control}
-                  name="color"
-                  render={({ field: { onChange, value, name, ref } }) => (
-                    <EmotionCacheProvider>
-                      <Select
-                        isMulti
-                        ref={ref}
-                        name={name}
-                        options={coatColors}
-                        closeMenuOnSelect={false}
-                        components={animatedComponents}
-                        value={coatColors.filter((el) =>
-                          value?.includes(el.value)
-                        )}
-                        onChange={(val) => onChange(val.map((c) => c.value))}
-                        // className={cn(
-                        //   methods.formState.errors.type && "border-red-600",
-                        //   "h-10 border border-accent/30 bg-background px-3 py-2 text-sm ring-offset-transparent !transition-colors !duration-300 placeholder:text-muted-foreground hover:border-accent focus:outline-none focus:ring-1 focus:ring-ring focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-background"
-                        // )}
-                        unstyled
-                        classNames={{
-                          control: ({ isFocused }) =>
-                            cn(
-                              isFocused
-                                ? controlStyles.focus
-                                : controlStyles.nonFocus,
-                              controlStyles.base
-                            ),
-                          input: () => selectInputStyles,
-                        }}
-                      />
-                    </EmotionCacheProvider>
+                <Label htmlFor="markings">
+                  Do they have any markings on them?
+                </Label>
+                <Input
+                  id="markings"
+                  placeholder="E.g. white spot on their right eye..."
+                  className={cn(
+                    methods.formState.errors.markings &&
+                      "border-red-600 hover:border-red-600 focus:ring-0",
+                    "placeholder:text-foreground"
                   )}
+                  {...methods.register("markings")}
                 />
                 <p className="italic text-red-600">
-                  {methods.formState.errors?.color?.message}
+                  {methods.formState.errors?.markings?.message}
+                </p>
+              </div>
+              <div>
+                <Label htmlFor="uniqueAttribute">
+                  Do they have any unique attributes?
+                </Label>
+                <Input
+                  id="uniqueAttribute"
+                  placeholder="E.g. missing back right leg, no tail, etc."
+                  className={cn(
+                    methods.formState.errors.uniqueAttribute &&
+                      "border-red-600 hover:border-red-600 focus:ring-0",
+                    "placeholder:text-foreground"
+                  )}
+                  {...methods.register("uniqueAttribute")}
+                />
+                <p className="italic text-red-600">
+                  {methods.formState.errors?.uniqueAttribute?.message}
+                </p>
+              </div>
+              <div>
+                <Label htmlFor="location">Where are you located?</Label>
+                <Input
+                  id="location"
+                  placeholder="E.g. Maple street, 32259"
+                  className={cn(
+                    methods.formState.errors.location &&
+                      "border-red-600 hover:border-red-600 focus:ring-0",
+                    "placeholder:text-foreground"
+                  )}
+                  {...methods.register("location")}
+                />
+                <p className="italic text-red-600">
+                  {methods.formState.errors?.location?.message}
                 </p>
               </div>
               {/* TO-DO: get isSubmititng to work :(  */}
