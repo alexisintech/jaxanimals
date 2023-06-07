@@ -38,7 +38,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/Select";
-import { MultiSelect } from "~/components/ui/MultiSelect";
 
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
