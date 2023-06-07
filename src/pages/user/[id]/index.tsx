@@ -103,9 +103,7 @@ const Settings: NextPage = () => {
             <form onSubmit={onSubmit}>
               <div className="flex flex-col gap-5 px-10 pt-10">
                 <div className="space-y-1">
-                  <Label htmlFor="Name" className="text-xl font-extrabold">
-                    Name
-                  </Label>
+                  <Label htmlFor="Name">Name</Label>
                   <Input
                     disabled
                     value={user?.name || ""}
@@ -113,9 +111,7 @@ const Settings: NextPage = () => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="Email" className="text-xl font-extrabold ">
-                    Email
-                  </Label>
+                  <Label htmlFor="Email">Email</Label>
                   <Input
                     disabled
                     value={user?.email || ""}
@@ -128,9 +124,7 @@ const Settings: NextPage = () => {
                     name="phone"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xl font-extrabold">
-                          Phone
-                        </FormLabel>
+                        <FormLabel>Phone</FormLabel>
                         <FormControl>
                           <Input
                             {...field}
@@ -162,9 +156,7 @@ const Settings: NextPage = () => {
                     name="facebook"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xl font-extrabold">
-                          Facebook
-                        </FormLabel>
+                        <FormLabel>Facebook</FormLabel>
                         <FormControl>
                           <Input
                             {...field}
@@ -187,9 +179,7 @@ const Settings: NextPage = () => {
                     name="instagram"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xl font-extrabold">
-                          Instagram
-                        </FormLabel>
+                        <FormLabel>Instagram</FormLabel>
                         <FormControl>
                           <Input
                             {...field}
