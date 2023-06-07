@@ -1,5 +1,3 @@
-"use client";
-
 import { ListingType, ListingSpecies, ListingSex } from "@prisma/client";
 import { type GetServerSidePropsContext, type NextPage } from "next";
 import { getServerSession } from "next-auth";
@@ -7,26 +5,15 @@ import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { z } from "zod";
 import { Controller } from "react-hook-form";
-import createCache from "@emotion/cache";
-import { CacheProvider } from "@emotion/react";
 import { authOptions } from "~/server/auth";
 
 import { api } from "~/utils/api";
 import { useZodForm } from "~/utils/zod-form";
-import { TCoatColors, coatColors } from "~/utils/coatColors";
+import { coatColors } from "~/utils/coatColors";
 import { cn } from "~/utils/cn";
 
 import { Button } from "~/components/ui/Button";
 import Header from "~/components/ui/Header";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/ui/Form";
 import { Input } from "~/components/ui/Input";
 import { Separator } from "~/components/ui/Separator";
 import { Label } from "~/components/ui/Label";
@@ -34,20 +21,11 @@ import {
   Select as ShadSelect,
   SelectContent,
   SelectItem,
-  SelectScrollDownButton,
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/Select";
-import { MultiSelect } from "~/components/ui/MultiSelect";
 
-import Select from "react-select";
-import makeAnimated from "react-select/animated";
-import { useMemo } from "react";
-
-const animatedComponents = makeAnimated();
-
-// TO-DO: enum ListingColors array of coat colors
-
+// Validate form with Zod
 export const createListingSchema = z.object({
   // img: z.string().url(),
   type: z.nativeEnum(ListingType),
@@ -60,27 +38,40 @@ export const createListingSchema = z.object({
   // location: z.string(),
 });
 
-// This ensures that Emotion's styles are inserted before Tailwind's styles so that Tailwind classes have precedence over Emotion
-const EmotionCacheProvider = ({ children }: { children: React.ReactNode }) => {
-  const cache = useMemo(
-    () =>
-      createCache({
-        key: "with-tailwind",
-        insertionPoint: document.querySelector("title")!,
-      }),
-    []
-  );
+// Stupid react-select shit
+import Select, { components, type DropdownIndicatorProps } from "react-select";
+import makeAnimated from "react-select/animated";
 
-  return <CacheProvider value={cache}>{children}</CacheProvider>;
-};
+const animatedComponents = makeAnimated();
 
 const controlStyles = {
-  base: "h-10 border border-accent/30 bg-background px-3 py-2 text-sm !transition-colors !duration-300 hover:border-accent dark:bg-background rounded",
+  base: "flex align-center h-10 border border-accent/30 bg-background text-sm !transition-colors !duration-300 hover:border-accent dark:bg-background rounded",
   focus: "ring-1 ring-ring outline-none  hover:border-accent",
   nonFocus: "border-accent/30 hover:border-accent",
 };
 const selectInputStyles =
-  "text-red-600 !hover:outline-none !hover:border-none !focus:outline-none !focus:border-none";
+  "!hover:outline-none !hover:border-none !focus:outline-none !focus:border-none placeholder:text-muted-foreground";
+const placeholderStyles = "text-muted-foreground";
+const valueContainerStyles = "px-3 py-2 h-10 gap-1";
+const multiValueStyles =
+  "bg-accent/30 text-sm rounded items-center m-[2px] flex";
+const multiValueLabelStyles = "p-[3px] pl-[6px]";
+const multiValueRemoveStyles =
+  "flex align-center hover:bg-red-400 hover:text-red-800 text-muted-foreground px-1";
+const indicatorsContainerStyles = "p-1 gap-1";
+const clearIndicatorStyles =
+  "text-gray-500 p-1 rounded-md hover:bg-red-50 hover:text-red-800";
+const indicatorSeparatorStyles = "display:none";
+const dropdownIndicatorStyles = "text-accent/30";
+const menuStyles = "p-1 mt-2 border border-gray-200 bg-white rounded-lg";
+const groupHeadingStyles = "ml-3 mt-2 mb-1 text-gray-500 text-sm";
+const optionStyles = {
+  base: "hover:cursor-pointer px-3 py-2 rounded",
+  focus: "bg-gray-100 active:bg-gray-200",
+  selected: "after:content-['✔'] after:ml-2 after:text-green-500 text-gray-500",
+};
+const noOptionsMessageStyles =
+  "text-gray-500 p-2 bg-gray-50 border border-dashed border-gray-200 rounded-sm";
 //"h-10 border border-accent/30 bg-background px-3 py-2 text-sm ring-offset-transparent !transition-colors !duration-300 placeholder:text-muted-foreground hover:border-accent focus:outline-none focus:ring-1 focus:ring-ring focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-background"
 
 const CreateListing: NextPage = () => {
@@ -264,35 +255,93 @@ const CreateListing: NextPage = () => {
                   control={methods.control}
                   name="color"
                   render={({ field: { onChange, value, name, ref } }) => (
-                    <EmotionCacheProvider>
-                      <Select
-                        isMulti
-                        ref={ref}
-                        name={name}
-                        options={coatColors}
-                        closeMenuOnSelect={false}
-                        components={animatedComponents}
-                        value={coatColors.filter((el) =>
-                          value?.includes(el.value)
-                        )}
-                        onChange={(val) => onChange(val.map((c) => c.value))}
-                        // className={cn(
-                        //   methods.formState.errors.type && "border-red-600",
-                        //   "h-10 border border-accent/30 bg-background px-3 py-2 text-sm ring-offset-transparent !transition-colors !duration-300 placeholder:text-muted-foreground hover:border-accent focus:outline-none focus:ring-1 focus:ring-ring focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-background"
-                        // )}
-                        unstyled
-                        classNames={{
-                          control: ({ isFocused }) =>
-                            cn(
-                              isFocused
-                                ? controlStyles.focus
-                                : controlStyles.nonFocus,
-                              controlStyles.base
-                            ),
-                          input: () => selectInputStyles,
-                        }}
-                      />
-                    </EmotionCacheProvider>
+                    <Select
+                      isMulti
+                      ref={ref}
+                      name={name}
+                      options={coatColors}
+                      closeMenuOnSelect={false}
+                      components={animatedComponents}
+                      value={coatColors.filter((el) =>
+                        value?.includes(el.value)
+                      )}
+                      onChange={(val) => onChange(val.map((c) => c.value))}
+                      classNamePrefix="react-select"
+                      unstyled
+                      styles={{
+                        input: (base) => ({
+                          ...base,
+                          "input:focus": {
+                            boxShadow: "none",
+                          },
+                        }),
+                        // On mobile, the label will truncate automatically, so we want to
+                        // override that behaviour.
+                        multiValueLabel: (base) => ({
+                          ...base,
+                          whiteSpace: "normal",
+                          overflow: "visible",
+                        }),
+                        control: (base) => ({
+                          ...base,
+                          transition: "none",
+                        }),
+                      }}
+                      classNames={{
+                        control: ({ isFocused }) =>
+                          cn(
+                            isFocused
+                              ? controlStyles.focus
+                              : controlStyles.nonFocus,
+                            controlStyles.base
+                          ),
+                        placeholder: () => placeholderStyles,
+                        input: () => selectInputStyles,
+                        valueContainer: () => valueContainerStyles,
+                        multiValue: () => multiValueStyles,
+                        multiValueLabel: () => multiValueLabelStyles,
+                        multiValueRemove: () =>
+                          cn(multiValueRemoveStyles, multiValueRemoveStyles),
+                        indicatorsContainer: () => indicatorsContainerStyles,
+                        clearIndicator: () => clearIndicatorStyles,
+                        indicatorSeparator: () => indicatorSeparatorStyles,
+                        dropdownIndicator: () => dropdownIndicatorStyles,
+                        menu: () => menuStyles,
+                        groupHeading: () => groupHeadingStyles,
+                        option: ({ isFocused, isSelected }) =>
+                          cn(
+                            isFocused && optionStyles.focus,
+                            isSelected && optionStyles.selected,
+                            optionStyles.base
+                          ),
+                        noOptionsMessage: () => noOptionsMessageStyles,
+                      }}
+                    />
+                  )}
+                />
+                <p className="italic text-red-600">
+                  {methods.formState.errors?.color?.message}
+                </p>
+              </div>
+              <div>
+                <Label>What color is their coat?</Label>
+                <Controller
+                  control={methods.control}
+                  name="color"
+                  render={({ field: { onChange, value, name, ref } }) => (
+                    <Select
+                      isMulti
+                      ref={ref}
+                      name={name}
+                      options={coatColors}
+                      closeMenuOnSelect={false}
+                      components={animatedComponents}
+                      value={coatColors.filter((el) =>
+                        value?.includes(el.value)
+                      )}
+                      onChange={(val) => onChange(val.map((c) => c.value))}
+                      classNamePrefix="react-select2"
+                    />
                   )}
                 />
                 <p className="italic text-red-600">
