@@ -117,12 +117,7 @@ const CreateListing: NextPage = () => {
                       value={field.value}
                       onValueChange={field.onChange}
                     >
-                      <SelectTrigger
-                        className={cn(
-                          methods.formState.errors.type && "border-red-600",
-                          "italic"
-                        )}
-                      >
+                      <SelectTrigger className="italic">
                         <SelectValue placeholder="Lost or found?" />
                       </SelectTrigger>
                       <SelectContent>
@@ -135,7 +130,7 @@ const CreateListing: NextPage = () => {
                     </ShadSelect>
                   )}
                 />
-                <p className="italic text-red-600">
+                <p className="text-sm italic text-red-600">
                   {methods.formState.errors?.type?.message}
                 </p>
               </div>
@@ -149,12 +144,7 @@ const CreateListing: NextPage = () => {
                       value={field.value}
                       onValueChange={field.onChange}
                     >
-                      <SelectTrigger
-                        className={cn(
-                          methods.formState.errors.type && "border-red-600",
-                          "italic"
-                        )}
-                      >
+                      <SelectTrigger className="italic">
                         <SelectValue placeholder="Select a species" />
                       </SelectTrigger>
                       <SelectContent>
@@ -168,7 +158,7 @@ const CreateListing: NextPage = () => {
                   )}
                 />
 
-                <p className="italic text-red-600">
+                <p className="text-sm italic text-red-600">
                   {methods.formState.errors?.species?.message}
                 </p>
               </div>
@@ -182,12 +172,7 @@ const CreateListing: NextPage = () => {
                       value={field.value}
                       onValueChange={field.onChange}
                     >
-                      <SelectTrigger
-                        className={cn(
-                          methods.formState.errors.type && "border-red-600",
-                          "italic"
-                        )}
-                      >
+                      <SelectTrigger className="italic">
                         <SelectValue placeholder="Select a sex" />
                       </SelectTrigger>
                       <SelectContent>
@@ -200,7 +185,7 @@ const CreateListing: NextPage = () => {
                     </ShadSelect>
                   )}
                 />
-                <p className="italic text-red-600">
+                <p className="text-sm italic text-red-600">
                   {methods.formState.errors?.sex?.message}
                 </p>
               </div>
@@ -284,7 +269,7 @@ const CreateListing: NextPage = () => {
                     </Listbox>
                   )}
                 />
-                <p className="italic text-red-600">
+                <p className="text-sm italic text-red-600">
                   {methods.formState.errors?.color?.message}
                 </p>
               </div>
@@ -293,14 +278,10 @@ const CreateListing: NextPage = () => {
                 <Input
                   id="location"
                   placeholder="E.g. Maple street, 32259"
-                  className={cn(
-                    methods.formState.errors.location &&
-                      "border-red-600 hover:border-red-600 focus:ring-0",
-                    "placeholder:italic placeholder:text-foreground"
-                  )}
+                  className="placeholder:italic placeholder:text-foreground"
                   {...methods.register("location")}
                 />
-                <p className="italic text-red-600">
+                <p className="text-sm italic text-red-600">
                   {methods.formState.errors?.location?.message}
                 </p>
               </div>
@@ -311,14 +292,10 @@ const CreateListing: NextPage = () => {
                 <Input
                   id="name"
                   placeholder="Type a name..."
-                  className={cn(
-                    methods.formState.errors.name &&
-                      "border-red-600 hover:border-red-600 focus:ring-0",
-                    "placeholder:italic placeholder:text-foreground"
-                  )}
+                  className="placeholder:italic placeholder:text-foreground"
                   {...methods.register("name")}
                 />
-                <p className="italic text-red-600">
+                <p className="text-sm italic text-red-600">
                   {methods.formState.errors?.name?.message}
                 </p>
               </div>
@@ -329,14 +306,10 @@ const CreateListing: NextPage = () => {
                 <Input
                   id="markings"
                   placeholder="E.g. white spot on their right eye"
-                  className={cn(
-                    methods.formState.errors.markings &&
-                      "border-red-600 hover:border-red-600 focus:ring-0",
-                    "placeholder:italic placeholder:text-foreground"
-                  )}
+                  className="placeholder:italic placeholder:text-foreground"
                   {...methods.register("markings")}
                 />
-                <p className="italic text-red-600">
+                <p className="text-sm italic text-red-600">
                   {methods.formState.errors?.markings?.message}
                 </p>
               </div>
@@ -347,14 +320,10 @@ const CreateListing: NextPage = () => {
                 <Input
                   id="uniqueAttribute"
                   placeholder="E.g. missing back right leg, no tail, etc."
-                  className={cn(
-                    methods.formState.errors.uniqueAttribute &&
-                      "border-red-600 hover:border-red-600 focus:ring-0",
-                    "placeholder:italic placeholder:text-foreground"
-                  )}
+                  className="placeholder:italic placeholder:text-foreground"
                   {...methods.register("uniqueAttribute")}
                 />
-                <p className="italic text-red-600">
+                <p className="text-sm italic text-red-600">
                   {methods.formState.errors?.uniqueAttribute?.message}
                 </p>
               </div>
