@@ -107,7 +107,7 @@ const CreateListing: NextPage = () => {
 
           <form onSubmit={onSubmit}>
             <div className="flex flex-col gap-5 px-10 pt-10">
-              <div>
+              <div className="space-y-1">
                 <Label>Is your pet lost, or did you find one?</Label>
                 <Controller
                   control={methods.control}
@@ -139,7 +139,7 @@ const CreateListing: NextPage = () => {
                   {methods.formState.errors?.type?.message}
                 </p>
               </div>
-              <div>
+              <div className="space-y-1">
                 <Label>Do they bark, or do they meow?</Label>
                 <Controller
                   control={methods.control}
@@ -172,7 +172,7 @@ const CreateListing: NextPage = () => {
                   {methods.formState.errors?.species?.message}
                 </p>
               </div>
-              <div>
+              <div className="space-y-1">
                 <Label>Are they male, female, or are you unsure?</Label>
                 <Controller
                   control={methods.control}
@@ -204,7 +204,7 @@ const CreateListing: NextPage = () => {
                   {methods.formState.errors?.sex?.message}
                 </p>
               </div>
-              <div>
+              <div className="space-y-1">
                 <Label>What color is their coat?</Label>
                 <Controller
                   control={methods.control}
@@ -230,7 +230,7 @@ const CreateListing: NextPage = () => {
                                     ? selectedColors
                                         .map((color) => color)
                                         .join(", ")
-                                    : "Select one or more colors..."}
+                                    : "Select one or more colors"}
                                 </span>
                                 <ChevronDown className="h-4 w-4 text-accent opacity-50" />
                               </Listbox.Button>
@@ -287,7 +287,7 @@ const CreateListing: NextPage = () => {
                   {methods.formState.errors?.color?.message}
                 </p>
               </div>
-              <div>
+              <div className="space-y-1">
                 <Label htmlFor="location">Where are you located?</Label>
                 <Input
                   id="location"
@@ -303,7 +303,7 @@ const CreateListing: NextPage = () => {
                   {methods.formState.errors?.location?.message}
                 </p>
               </div>
-              <div>
+              <div className="space-y-1">
                 <Label htmlFor="name">
                   Do they have a name they might respond to?
                 </Label>
@@ -321,13 +321,13 @@ const CreateListing: NextPage = () => {
                   {methods.formState.errors?.name?.message}
                 </p>
               </div>
-              <div>
+              <div className="space-y-1">
                 <Label htmlFor="markings">
                   Do they have any markings on them?
                 </Label>
                 <Input
                   id="markings"
-                  placeholder="E.g. white spot on their right eye..."
+                  placeholder="E.g. white spot on their right eye"
                   className={cn(
                     methods.formState.errors.markings &&
                       "border-red-600 hover:border-red-600 focus:ring-0",
@@ -339,7 +339,7 @@ const CreateListing: NextPage = () => {
                   {methods.formState.errors?.markings?.message}
                 </p>
               </div>
-              <div>
+              <div className="space-y-1">
                 <Label htmlFor="uniqueAttribute">
                   Do they have any unique attributes?
                 </Label>
