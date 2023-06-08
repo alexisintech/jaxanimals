@@ -204,6 +204,7 @@ const CreateListing: NextPage = () => {
                   {methods.formState.errors?.sex?.message}
                 </p>
               </div>
+              {/* HeadlessUI ListBox here hiding among Shadcn components hehe */}
               <div className="space-y-1">
                 <Label>What color is their coat?</Label>
                 <Controller
