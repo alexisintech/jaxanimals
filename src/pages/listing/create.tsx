@@ -232,9 +232,7 @@ const CreateListing: NextPage = () => {
                                         .join(", ")
                                     : "Select one or more colors..."}
                                 </span>
-                                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                                  <ChevronDown className="h-4 w-4 text-accent opacity-50" />
-                                </span>
+                                <ChevronDown className="h-4 w-4 text-accent opacity-50" />
                               </Listbox.Button>
                             </span>
 
@@ -297,7 +295,7 @@ const CreateListing: NextPage = () => {
                   className={cn(
                     methods.formState.errors.location &&
                       "border-red-600 hover:border-red-600 focus:ring-0",
-                    "placeholder:text-foreground"
+                    "placeholder:italic placeholder:text-foreground"
                   )}
                   {...methods.register("location")}
                 />
@@ -315,7 +313,7 @@ const CreateListing: NextPage = () => {
                   className={cn(
                     methods.formState.errors.name &&
                       "border-red-600 hover:border-red-600 focus:ring-0",
-                    "placeholder:text-foreground"
+                    "placeholder:italic placeholder:text-foreground"
                   )}
                   {...methods.register("name")}
                 />
@@ -333,7 +331,7 @@ const CreateListing: NextPage = () => {
                   className={cn(
                     methods.formState.errors.markings &&
                       "border-red-600 hover:border-red-600 focus:ring-0",
-                    "placeholder:text-foreground"
+                    "placeholder:italic placeholder:text-foreground"
                   )}
                   {...methods.register("markings")}
                 />
@@ -351,7 +349,7 @@ const CreateListing: NextPage = () => {
                   className={cn(
                     methods.formState.errors.uniqueAttribute &&
                       "border-red-600 hover:border-red-600 focus:ring-0",
-                    "placeholder:text-foreground"
+                    "placeholder:italic placeholder:text-foreground"
                   )}
                   {...methods.register("uniqueAttribute")}
                 />
