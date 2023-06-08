@@ -94,11 +94,3 @@ html::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
-
-.react-select__control {
-  @apply border border-accent
-}
-
-.react-select2__control {
-  @apply border border-accent hover:border hover:border-accent
-}

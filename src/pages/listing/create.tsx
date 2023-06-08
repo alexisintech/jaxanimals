@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ListingType, ListingSpecies, ListingSex } from "@prisma/client";
 import { type GetServerSidePropsContext, type NextPage } from "next";
 import { getServerSession } from "next-auth";
@@ -9,7 +10,7 @@ import { authOptions } from "~/server/auth";
 
 import { api } from "~/utils/api";
 import { useZodForm } from "~/utils/zod-form";
-import { coatColors } from "~/utils/coatColors";
+import { coatColors } from "~/utils/colorOptions";
 import { cn } from "~/utils/cn";
 
 import { Button } from "~/components/ui/Button";
@@ -25,20 +26,8 @@ import {
   SelectValue,
 } from "~/components/ui/Select";
 
-// react-select shit
-import Select from "react-select";
-import makeAnimated from "react-select/animated";
-
-const animatedComponents = makeAnimated();
-
-const controlStyles = {
-  base: "border border-accent/30 bg-background text-sm !transition-colors !duration-300 hover:border-accent dark:bg-background rounded",
-  focus: "ring-1 ring-ring outline-none  hover:border-accent",
-  nonFocus: "border-accent/30 hover:border-accent",
-};
-const selectInputStyles =
-  "text-red-600 !hover:outline-none !hover:border-none !focus:outline-none !focus:border-none";
-//"h-10 border border-accent/30 bg-background px-3 py-2 text-sm ring-offset-transparent !transition-colors !duration-300 placeholder:text-muted-foreground hover:border-accent focus:outline-none focus:ring-1 focus:ring-ring focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-background"
+import { Listbox, Transition } from "@headlessui/react";
+import { Check, ChevronDown } from "lucide-react";
 
 // Validate form with Zod
 export const createListingSchema = z.object({
@@ -58,6 +47,7 @@ export const createListingSchema = z.object({
 
 const CreateListing: NextPage = () => {
   const { data: session, status } = useSession();
+  const [selectedColors, setSelectedColors] = useState([]);
 
   if (status === "loading") {
     // load loading component
@@ -129,10 +119,11 @@ const CreateListing: NextPage = () => {
                     >
                       <SelectTrigger
                         className={cn(
-                          methods.formState.errors.type && "border-red-600"
+                          methods.formState.errors.type && "border-red-600",
+                          "italic"
                         )}
                       >
-                        <SelectValue placeholder="Lost or found..." />
+                        <SelectValue placeholder="Lost or found?" />
                       </SelectTrigger>
                       <SelectContent>
                         {Object.entries(ListingType).map(([key, value]) => (
@@ -160,7 +151,8 @@ const CreateListing: NextPage = () => {
                     >
                       <SelectTrigger
                         className={cn(
-                          methods.formState.errors.type && "border-red-600"
+                          methods.formState.errors.type && "border-red-600",
+                          "italic"
                         )}
                       >
                         <SelectValue placeholder="Select a species" />
@@ -192,7 +184,8 @@ const CreateListing: NextPage = () => {
                     >
                       <SelectTrigger
                         className={cn(
-                          methods.formState.errors.type && "border-red-600"
+                          methods.formState.errors.type && "border-red-600",
+                          "italic"
                         )}
                       >
                         <SelectValue placeholder="Select a sex" />
@@ -216,37 +209,100 @@ const CreateListing: NextPage = () => {
                 <Controller
                   control={methods.control}
                   name="color"
-                  render={({ field: { onChange, value, name, ref } }) => (
-                    <Select
-                      isMulti
-                      ref={ref}
-                      name={name}
-                      options={coatColors}
-                      closeMenuOnSelect={false}
-                      components={animatedComponents}
-                      value={coatColors.filter((el) =>
-                        value?.includes(el.value)
-                      )}
-                      onChange={(val) => onChange(val.map((c) => c.value))}
-                      // className={cn(
-                      //   methods.formState.errors.type && "border-red-600",
-                      //   "h-10 border border-accent/30 bg-background px-3 py-2 text-sm ring-offset-transparent !transition-colors !duration-300 placeholder:text-muted-foreground hover:border-accent focus:outline-none focus:ring-1 focus:ring-ring focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-background"
-                      // )}
-                      classNames={{
-                        control: ({ isFocused }) =>
-                          cn(
-                            isFocused
-                              ? controlStyles.focus
-                              : controlStyles.nonFocus,
-                            controlStyles.base
-                          ),
-                        input: () => selectInputStyles,
+                  render={({ field: { onChange } }) => (
+                    <Listbox
+                      multiple
+                      as="div"
+                      className="space-y-1"
+                      value={selectedColors}
+                      onChange={(e) => {
+                        onChange(e);
+                        setSelectedColors(e);
                       }}
-                    />
+                    >
+                      {({ open }) => (
+                        <>
+                          <div className="relative">
+                            <span className="inline-block w-full rounded-md shadow-sm">
+                              <Listbox.Button className="flex h-10 w-full items-center justify-between rounded border border-accent/30 bg-background px-3 py-2 text-sm ring-offset-transparent !transition-colors !duration-300 placeholder:text-muted-foreground hover:border-accent focus:outline-none focus:ring-1 focus:ring-ring focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-background">
+                                <span className="block truncate pr-2 italic">
+                                  {selectedColors.length > 0
+                                    ? selectedColors
+                                        .map((color) => color)
+                                        .join(", ")
+                                    : "Select one or more colors..."}
+                                </span>
+                                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                                  <ChevronDown className="h-4 w-4 text-accent opacity-50" />
+                                </span>
+                              </Listbox.Button>
+                            </span>
+
+                            <Transition
+                              show={open}
+                              enter="transition-all ease-in-out duration-500s"
+                              enterFrom="opacity-0 translate-y-[-5px]"
+                              enterTo="opacity-100 translate-y-0"
+                              className="absolute mt-1 w-full"
+                            >
+                              <Listbox.Options
+                                static
+                                className="scrollbar-track-bg-background max-h-60 overflow-auto rounded-md border border-accent bg-background p-1 leading-6 shadow-md animate-in fade-in-80 scrollbar-thin scrollbar-thumb-accent focus:outline-none sm:text-sm sm:leading-5"
+                              >
+                                {coatColors.map((color) => (
+                                  <Listbox.Option key={color} value={color}>
+                                    {({ selected, active }) => (
+                                      <div
+                                        className={cn(
+                                          "relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2",
+                                          active
+                                            ? "bg-accent/20 text-accent-foreground"
+                                            : "text-bg-foreground",
+                                          selected
+                                            ? "bg-accent/20 text-accent-foreground"
+                                            : "text-bg-foreground"
+                                        )}
+                                      >
+                                        <span className={"block truncate"}>
+                                          {color}
+                                        </span>
+                                        {selected && (
+                                          <span
+                                            className={`text-bg-foreground absolute inset-y-0 left-0 flex items-center pl-1.5`}
+                                          >
+                                            <Check className="h-4 w-4" />
+                                          </span>
+                                        )}
+                                      </div>
+                                    )}
+                                  </Listbox.Option>
+                                ))}
+                              </Listbox.Options>
+                            </Transition>
+                          </div>
+                        </>
+                      )}
+                    </Listbox>
                   )}
                 />
                 <p className="italic text-red-600">
                   {methods.formState.errors?.color?.message}
+                </p>
+              </div>
+              <div>
+                <Label htmlFor="location">Where are you located?</Label>
+                <Input
+                  id="location"
+                  placeholder="E.g. Maple street, 32259"
+                  className={cn(
+                    methods.formState.errors.location &&
+                      "border-red-600 hover:border-red-600 focus:ring-0",
+                    "placeholder:text-foreground"
+                  )}
+                  {...methods.register("location")}
+                />
+                <p className="italic text-red-600">
+                  {methods.formState.errors?.location?.message}
                 </p>
               </div>
               <div>
@@ -301,22 +357,6 @@ const CreateListing: NextPage = () => {
                 />
                 <p className="italic text-red-600">
                   {methods.formState.errors?.uniqueAttribute?.message}
-                </p>
-              </div>
-              <div>
-                <Label htmlFor="location">Where are you located?</Label>
-                <Input
-                  id="location"
-                  placeholder="E.g. Maple street, 32259"
-                  className={cn(
-                    methods.formState.errors.location &&
-                      "border-red-600 hover:border-red-600 focus:ring-0",
-                    "placeholder:text-foreground"
-                  )}
-                  {...methods.register("location")}
-                />
-                <p className="italic text-red-600">
-                  {methods.formState.errors?.location?.message}
                 </p>
               </div>
               {/* TO-DO: get isSubmititng to work :(  */}

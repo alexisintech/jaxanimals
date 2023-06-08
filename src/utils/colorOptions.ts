@@ -1,0 +1,17 @@
+export const coatColors = [
+  "Black",
+  "Brown",
+  "White",
+  "Chestnut",
+  "Gray",
+  "Tan",
+  "Orange",
+  "Gold",
+  "Red",
+  "Cream",
+  "Brindle",
+  "Striped",
+  "Merle",
+  "Tortoiseshell",
+  "Calico",
+];
