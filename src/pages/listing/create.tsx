@@ -13,6 +13,9 @@ import { useZodForm } from "~/utils/zod-form";
 import { coatColors } from "~/utils/colorOptions";
 import { cn } from "~/utils/cn";
 
+import { UploadButton } from "@uploadthing/react";
+import type { OurFileRouter } from "~/server/uploadthing";
+
 import { Button } from "~/components/ui/Button";
 import Header from "~/components/ui/Header";
 import { Input } from "~/components/ui/Input";
@@ -28,10 +31,11 @@ import {
 
 import { Listbox, Transition } from "@headlessui/react";
 import { Check, ChevronDown } from "lucide-react";
+import Image from "next/image";
 
 // Validate form with Zod
 export const createListingSchema = z.object({
-  // img: z.string().url(),
+  img: z.string().url(),
   type: z.nativeEnum(ListingType),
   species: z.nativeEnum(ListingSpecies),
   sex: z.nativeEnum(ListingSex),
@@ -48,6 +52,7 @@ export const createListingSchema = z.object({
 const CreateListing: NextPage = () => {
   const { data: session, status } = useSession();
   const [selectedColors, setSelectedColors] = useState([]);
+  const [imageUrl, setImageUrl] = useState("");
 
   if (status === "loading") {
     // load loading component
@@ -108,6 +113,59 @@ const CreateListing: NextPage = () => {
           <form onSubmit={onSubmit}>
             <div className="flex flex-col gap-5 px-10 pt-10">
               <div className="space-y-1">
+                <Controller
+                  control={methods.control}
+                  name="img"
+                  render={({ field }) => (
+                    <>
+                      {imageUrl ? (
+                        <>
+                          <Input
+                            id="img"
+                            value={imageUrl}
+                            className="hidden"
+                            {...methods.register("img")}
+                          />
+                          <div className="mx-auto flex h-[250px] w-[250px] rounded border border-accent/20 object-cover p-2">
+                            <Image
+                              alt="user's uploaded image of pet"
+                              src={imageUrl}
+                              width={500}
+                              height={500}
+                              className="mx-auto object-cover"
+                            />
+                          </div>
+                        </>
+                      ) : (
+                        <UploadButton<OurFileRouter>
+                          endpoint="imageUploader"
+                          onClientUploadComplete={(res) => {
+                            // Do something with the response
+                            console.log("Files: ", res);
+
+                            if (!res || !res[0]) {
+                              throw new Error("File could not be uploaded");
+                            }
+
+                            setImageUrl(res[0].fileUrl || "");
+
+                            console.log("Upload Completed");
+                          }}
+                          onUploadError={(error: Error) => {
+                            // Do something with the error.
+                            console.log(`ERROR! ${error.message}`);
+                          }}
+                        />
+                      )}
+                    </>
+                  )}
+                />
+                <p className="text-sm italic text-red-600">
+                  {methods.formState.errors?.img?.message}
+                </p>
+              </div>
+
+              <div className="space-y-1">
                 <Label>Is your pet lost, or did you find one?</Label>
                 <Controller
                   control={methods.control}
@@ -157,7 +215,6 @@ const CreateListing: NextPage = () => {
                     </ShadSelect>
                   )}
                 />
-
                 <p className="text-sm italic text-red-600">
                   {methods.formState.errors?.species?.message}
                 </p>
