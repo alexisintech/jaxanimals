@@ -28,7 +28,7 @@ export const listingRouter = createTRPCRouter({
   //       },
   //     });
   //   }),
-  createListing: protectedProcedure
+  create: protectedProcedure
     .input(createListingSchema)
     .mutation(({ ctx, input }) => {
       return ctx.prisma.listing.create({

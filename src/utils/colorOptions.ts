@@ -14,4 +14,6 @@ export const coatColors = [
   "Merle",
   "Tortoiseshell",
   "Calico",
+  "Tabby",
+  "Tuxedo",
 ];
