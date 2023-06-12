@@ -8,14 +8,14 @@ import {
 } from "~/server/api/trpc";
 
 export const listingRouter = createTRPCRouter({
-  // getUserById: protectedProcedure
-  //   .input(z.object({ id: z.string() }))
-  //   .query(async ({ input: { id }, ctx }) => {
-  //     const user = await ctx.prisma.user.findUnique({
-  //       where: { id },
-  //     });
-  //     return user;
-  //   }),
+  getListingById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input: { id }, ctx }) => {
+      const listing = await ctx.prisma.listing.findUnique({
+        where: { id },
+      });
+      return listing;
+    }),
   // updateUser: protectedProcedure
   //   .input(updateUserSchema)
   //   .mutation(({ ctx, input }) => {

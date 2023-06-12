@@ -72,7 +72,10 @@ const CreateListing: NextPage = () => {
   const createListing = api.listing.create.useMutation({
     onSettled: (newPost) => {
       setTimeout(() => {
-        void router.push(`/listing/${newPost?.id || "error"}`);
+        void router.push({
+          pathname: "/listing/[id]",
+          query: { id: newPost?.id },
+        });
       }, 2500);
     },
     onError: (e) => {
