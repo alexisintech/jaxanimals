@@ -69,14 +69,11 @@ const CreateListing: NextPage = () => {
     schema: createListingSchema,
   });
 
-  const utils = api.useContext();
   const createListing = api.listing.create.useMutation({
-    onSettled: async () => {
-      await utils.listing.invalidate();
+    onSettled: (newPost) => {
       setTimeout(() => {
-        void router.push(`/`);
+        void router.push(`/listing/${newPost?.id || "error"}`);
       }, 2500);
-      methods.reset();
     },
     onError: (e) => {
       console.log("Couldn't create the listing...");
