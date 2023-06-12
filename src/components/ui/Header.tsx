@@ -31,7 +31,7 @@ const Header = ({ loggingIn }: HeaderProps) => {
 
   return (
     <header className="sticky top-0 z-40 w-full items-center justify-between backdrop-blur">
-      <div className="container flex h-14 items-center ">
+      <div className="container flex h-16 items-center ">
         <div className="mr-4 flex">
           <Link className="mr-6 flex items-center space-x-2" href="/">
             <span className="text-lg font-bold text-background dark:text-foreground sm:inline-block lg:text-xl xl:text-2xl">
@@ -45,7 +45,7 @@ const Header = ({ loggingIn }: HeaderProps) => {
             {!loggingIn && (
               <NavigationMenuItem>
                 {sessionData ? (
-                  <Link href="#">
+                  <Link href="/listing/create">
                     <Button
                       variant="outline"
                       className="mr-2 border border-background text-background hover:text-background dark:border-foreground dark:text-foreground dark:hover:text-foreground"

@@ -2,6 +2,7 @@ import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { Inter as FontSans } from "next/font/google";
+import "@uploadthing/react/styles.css";
 
 import { api } from "~/utils/api";
 
@@ -28,7 +29,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       </style>
       <SessionProvider session={session}>
         <ThemeProvider>
-          <div className="container mx-auto flex bg-gradient-to-br from-primary to-secondary">
+          <div className="flex bg-gradient-to-br from-primary to-secondary">
             <div className="min-h-screen flex-grow">
               <Component {...pageProps} />
             </div>
