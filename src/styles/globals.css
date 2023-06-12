@@ -76,10 +76,6 @@
 
 /* Custom styles */
 @layer base {
-  html::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
   html::-webkit-scrollbar-thumb {
     @apply bg-accent;
   }
@@ -91,7 +87,10 @@
 *:focus:not(:focus-visible) {
   outline: none;
 }
-
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: smooth; 
+}
+html::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }

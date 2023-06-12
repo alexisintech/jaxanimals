@@ -84,7 +84,7 @@ model Listing {
     species         ListingSpecies
     sex             ListingSex
     name            String?
-    color           String
+    color           String[]
     markings        String?
     uniqueAttribute String?
     location        String
