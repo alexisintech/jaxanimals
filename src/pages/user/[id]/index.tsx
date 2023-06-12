@@ -168,7 +168,7 @@ const Settings: NextPage = () => {
                             )}
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="italic" />
                       </FormItem>
                     )}
                   />
@@ -191,7 +191,7 @@ const Settings: NextPage = () => {
                             )}
                           />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="italic" />
                       </FormItem>
                     )}
                   />
