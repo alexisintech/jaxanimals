@@ -50,7 +50,7 @@ export const updateUserSchema = z.object({
 });
 
 const Settings: NextPage = () => {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   if (status === "loading") {
     // load loading component

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ListingType, ListingSpecies, ListingSex } from "@prisma/client";
 import { type GetServerSidePropsContext, type NextPage } from "next";
 import { useRouter } from "next/router";
@@ -51,7 +51,7 @@ export const createListingSchema = z.object({
 });
 
 const CreateListing: NextPage = () => {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [selectedColors, setSelectedColors] = useState([]);
   const [imageUrl, setImageUrl] = useState("");
   // For API call
@@ -74,8 +74,9 @@ const CreateListing: NextPage = () => {
     onSettled: async () => {
       await utils.listing.invalidate();
       setTimeout(() => {
-        router.push(`/`);
+        void router.push(`/`);
       }, 2500);
+      methods.reset();
     },
     onError: (e) => {
       console.log("Couldn't create the listing...");
@@ -122,7 +123,7 @@ const CreateListing: NextPage = () => {
                   <Controller
                     control={methods.control}
                     name="img"
-                    render={({ field }) => (
+                    render={() => (
                       <>
                         {imageUrl ? (
                           <>
