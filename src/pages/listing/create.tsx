@@ -35,13 +35,15 @@ import { Check, ChevronDown } from "lucide-react";
 import Image from "next/image";
 
 // Validate form with Zod
-export const createListingSchema = z.object({
+export const ListingSchema = z.object({
   img: z.string().url(),
   type: z.nativeEnum(ListingType),
   species: z.nativeEnum(ListingSpecies),
   sex: z.nativeEnum(ListingSex),
   name: z.string().optional(),
-  color: z.array(z.string()),
+  color: z
+    .array(z.string())
+    .min(1, { message: "Please select at least one color." }),
   markings: z.string().optional(),
   uniqueAttribute: z.string().optional(),
   location: z.string().nonempty({
@@ -54,6 +56,10 @@ const CreateListing: NextPage = () => {
   const { status } = useSession();
   const [selectedColors, setSelectedColors] = useState([]);
   const [imageUrl, setImageUrl] = useState("");
+
+  // For UploadThing
+  const [uploadError, setUploadError] = useState(false);
+
   // For API call
   const [creating, setCreating] = useState(false);
   const [creationError, setCreationError] = useState(false);
@@ -66,7 +72,7 @@ const CreateListing: NextPage = () => {
   }
 
   const methods = useZodForm({
-    schema: createListingSchema,
+    schema: ListingSchema,
   });
 
   const createListing = api.listing.create.useMutation({
@@ -145,25 +151,40 @@ const CreateListing: NextPage = () => {
                             </div>
                           </>
                         ) : (
-                          <UploadButton<OurFileRouter>
-                            endpoint="imageUploader"
-                            onClientUploadComplete={(res) => {
-                              // Do something with the response
-                              console.log("Files: ", res);
+                          <>
+                            <UploadButton<OurFileRouter>
+                              endpoint="imageUploader"
+                              onClientUploadComplete={(res) => {
+                                // Do something with the response
+                                console.log("Files: ", res);
 
-                              if (!res || !res[0]) {
-                                throw new Error("File could not be uploaded");
-                              }
+                                if (!res || !res[0]) {
+                                  throw new Error("File could not be uploaded");
+                                }
 
-                              setImageUrl(res[0].fileUrl || "");
+                                setImageUrl(res[0].fileUrl || "");
 
-                              console.log("Upload Completed");
-                            }}
-                            onUploadError={(error: Error) => {
-                              // Do something with the error.
-                              console.log(`ERROR! ${error.message}`);
-                            }}
-                          />
+                                console.log("Upload Completed");
+                              }}
+                              onUploadError={(error: Error) => {
+                                // Do something with the error.
+                                console.log(`ERROR! ${error.message}`);
+                                setUploadError(true);
+                              }}
+                            />
+                            {uploadError ? (
+                              <p className="text-center text-xs italic text-red-600">
+                                Hmm... something went wrong. Make sure you are
+                                uploading an image, and that its under 4MB in
+                                size.
+                              </p>
+                            ) : (
+                              <p className="text-center text-xs italic opacity-50">
+                                Choose carefully! As of right now, you can't
+                                update this later...
+                              </p>
+                            )}
+                          </>
                         )}
                       </>
                     )}
