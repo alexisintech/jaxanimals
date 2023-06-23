@@ -34,22 +34,22 @@ import { Listbox, Transition } from "@headlessui/react";
 import { Check, ChevronDown } from "lucide-react";
 import Image from "next/image";
 
-// Validate form with Zod
-export const ListingSchema = z.object({
+// reused on backend
+export const createListingSchema = z.object({
   img: z.string().url(),
   type: z.nativeEnum(ListingType),
   species: z.nativeEnum(ListingSpecies),
   sex: z.nativeEnum(ListingSex),
-  name: z.string().optional(),
   color: z
     .array(z.string())
     .min(1, { message: "Please select at least one color." }),
-  markings: z.string().optional(),
-  uniqueAttribute: z.string().optional(),
   location: z.string().nonempty({
     message:
       "Please enter a location. It can be as simple as a zipcode, street name, or address of a nearby landmark.",
   }),
+  name: z.string().optional(),
+  markings: z.string().optional(),
+  uniqueAttribute: z.string().optional(),
 });
 
 const CreateListing: NextPage = () => {
@@ -72,7 +72,7 @@ const CreateListing: NextPage = () => {
   }
 
   const methods = useZodForm({
-    schema: ListingSchema,
+    schema: createListingSchema,
   });
 
   const createListing = api.listing.create.useMutation({
@@ -85,7 +85,7 @@ const CreateListing: NextPage = () => {
       }, 2500);
     },
     onError: (e) => {
-      console.log("Couldn't create the listing...");
+      console.log("And I oop- (error occurred while creating listing)");
       console.error(e);
       setCreationError(true);
     },
@@ -97,7 +97,7 @@ const CreateListing: NextPage = () => {
       setCreating(true);
     },
     (e) => {
-      console.log("And I oop- (an error occurred)");
+      console.log("And I oop- (error occurred while submitting the form)");
       console.error(e);
     }
   );
