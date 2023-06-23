@@ -36,6 +36,7 @@ export const updateUserSchema = z.object({
       message:
         "Phone numbers must have no symbols or spaces and must include the area code.",
     })
+    .regex(/^[0-9]+$/)
     .optional(),
   facebook: z.string().optional(),
   instagram: z.string().optional(),
