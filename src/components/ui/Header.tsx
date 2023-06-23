@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import * as React from "react";
 import { BsMoonStarsFill } from "react-icons/bs";
 import { FiSun } from "react-icons/fi";
 import { useTheme } from "next-themes";
@@ -22,20 +22,10 @@ import { useRouter } from "next/router";
 import { cn } from "~/utils/cn";
 
 const Header = ({ loggingIn }: HeaderProps) => {
-  const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
   const { data: sessionData } = useSession();
   const { push, asPath } = useRouter();
   const user = sessionData?.user;
-
-  // fixing a hydration error for next-themes
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return null;
-  }
 
   const handleLogin = () => push(`/login?callbackUrl=${asPath}`);
 
