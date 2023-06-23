@@ -1,4 +1,4 @@
-import { type GetServerSidePropsContext, type NextPage } from "next";
+import { type GetServerSidePropsContext } from "next";
 import { getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
@@ -23,9 +23,16 @@ import {
 import { Input } from "~/components/ui/Input";
 import { Separator } from "~/components/ui/Separator";
 import { Label } from "~/components/ui/Label";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { prisma } from "~/server/db";
+import { User } from "@prisma/client";
 
 // TO-DO: try phone .regex(^[0-9]+$)
 export const updateUserSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
   phone: z
     .string()
     .length(10, {
@@ -49,7 +56,12 @@ export const updateUserSchema = z.object({
     .optional(),
 });
 
-const Settings: NextPage = () => {
+export default function Settings({ userData }: { userData: User }) {
+  const [update, setUpdate] = useState({
+    updating: false,
+    saved: false,
+    error: false,
+  });
   const { status } = useSession();
 
   if (status === "loading") {
@@ -61,6 +73,14 @@ const Settings: NextPage = () => {
 
   const methods = useZodForm({
     schema: updateUserSchema,
+    defaultValues: {
+      id: userData.id,
+      name: userData.name || "",
+      email: userData.email || "",
+      phone: userData.phone || "",
+      facebook: userData.facebook || "",
+      instagram: userData.instagram || "",
+    },
   });
 
   const utils = api.useContext();
@@ -68,15 +88,35 @@ const Settings: NextPage = () => {
     onSettled: async () => {
       await utils.user.invalidate();
       methods.reset();
+      setUpdate({
+        updating: false,
+        saved: true,
+        error: false,
+      });
+    },
+    onError: (e) => {
+      console.log(
+        "And I oop- (error occurred while updating the user settings)"
+      );
+      console.error(e);
+      setUpdate((prev) => ({
+        ...prev,
+        error: true,
+      }));
     },
   });
 
   const onSubmit = methods.handleSubmit(
     (data) => {
-      updateUser.mutate(data);
+      setUpdate((prev) => ({
+        ...prev,
+        updating: true,
+      }));
+      // updateUser.mutate(data);
+      console.log(data);
     },
     (e) => {
-      console.log("And I oop- (an error occurred)");
+      console.log("And I oop- (error occurred while submitting the form)");
       console.error(e);
     }
   );
@@ -102,20 +142,32 @@ const Settings: NextPage = () => {
           <Form {...methods}>
             <form onSubmit={onSubmit}>
               <div className="flex flex-col gap-5 px-10 pt-10">
-                <div className="space-y-1">
-                  <Label htmlFor="Name">Name</Label>
-                  <Input
-                    disabled
-                    value={user?.name || ""}
-                    name={user?.name || ""}
+                <div>
+                  <FormField
+                    control={methods.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input disabled {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
                   />
                 </div>
-                <div className="space-y-1">
-                  <Label htmlFor="Email">Email</Label>
-                  <Input
-                    disabled
-                    value={user?.email || ""}
-                    name={user?.email || ""}
+                <div>
+                  <FormField
+                    control={methods.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input disabled {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
                   />
                 </div>
                 <div>
@@ -128,7 +180,7 @@ const Settings: NextPage = () => {
                         <FormControl>
                           <Input
                             {...field}
-                            placeholder={user?.phone || ""}
+                            placeholder="E.g. 9045550123"
                             maxLength={10}
                             className={cn(
                               methods.formState.errors.phone &&
@@ -160,7 +212,7 @@ const Settings: NextPage = () => {
                         <FormControl>
                           <Input
                             {...field}
-                            placeholder={user?.facebook || ""}
+                            placeholder="E.g. https://facebook.com/example"
                             className={cn(
                               methods.formState.errors.facebook &&
                                 "border-red-600 hover:border-red-600 focus:ring-0",
@@ -183,7 +235,7 @@ const Settings: NextPage = () => {
                         <FormControl>
                           <Input
                             {...field}
-                            placeholder={user?.instagram || ""}
+                            placeholder="E.g. https://instagram.com/example"
                             className={cn(
                               methods.formState.errors.instagram &&
                                 "border-red-600 hover:border-red-600 focus:ring-0",
@@ -196,11 +248,19 @@ const Settings: NextPage = () => {
                     )}
                   />
                 </div>
-                {/* TO-DO: get isSubmititng to work :(  */}
-                <Button type="submit" className="mt-5 w-full">
-                  {methods.formState.isSubmitting
-                    ? "Saving your changes..."
-                    : "Save"}
+
+                <Button
+                  type="submit"
+                  className={cn(update.saved && "bg-green-600", "mt-5 w-full")}
+                  disabled={update.updating || update.saved}
+                >
+                  {update.updating && !update.saved ? (
+                    <Loader2 className="animate-spin text-white" />
+                  ) : update.saved ? (
+                    "Saved"
+                  ) : (
+                    "Save"
+                  )}
                 </Button>
               </div>
             </form>
@@ -209,9 +269,7 @@ const Settings: NextPage = () => {
       </main>
     </>
   );
-};
-
-export default Settings;
+}
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions);
@@ -225,7 +283,22 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
+  const userData = await prisma.user.findUnique({
+    where: {
+      id: session.user.id,
+    },
+  });
+
+  if (!userData) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
   return {
-    props: { session },
+    props: { session, userData },
   };
 }
