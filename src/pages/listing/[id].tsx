@@ -4,15 +4,17 @@ import {
   ListingSpecies,
   ListingSex,
   type Listing,
-  type Session,
 } from "@prisma/client";
 import { type GetServerSidePropsContext } from "next";
+import Image from "next/image";
+import { useRouter } from "next/router";
 import { getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { z } from "zod";
 import { Controller } from "react-hook-form";
 import { authOptions } from "~/server/auth";
+import { prisma } from "~/server/db";
 
 import { api } from "~/utils/api";
 import { useZodForm } from "~/utils/zod-form";
@@ -33,26 +35,43 @@ import {
 } from "~/components/ui/Select";
 
 import { Listbox, Transition } from "@headlessui/react";
-import { Check, ChevronDown } from "lucide-react";
-import Image from "next/image";
-import { prisma } from "~/server/db";
+import { Check, ChevronDown, Loader2 } from "lucide-react";
 
-// Validate form with Zod
-import { ListingSchema } from "./create";
+// reused on backend
+export const updateListingSchema = z.object({
+  id: z.string(),
+  img: z.string().url(),
+  type: z.nativeEnum(ListingType),
+  species: z.nativeEnum(ListingSpecies),
+  sex: z.nativeEnum(ListingSex),
+  color: z
+    .array(z.string())
+    .min(1, { message: "Please select at least one color." }),
+  location: z.string().nonempty({
+    message:
+      "Please enter a location. It can be as simple as a zipcode, street name, or address of a nearby landmark.",
+  }),
+  name: z.string().optional(),
+  markings: z.string().optional(),
+  uniqueAttribute: z.string().optional(),
+});
 
 interface UpdateListingProps {
   listingData: Listing;
-  session: Session;
 }
 
-const UpdateListing = ({ listingData, session }: UpdateListingProps) => {
+const UpdateListing = ({ listingData }: UpdateListingProps) => {
+  const router = useRouter();
   const { status } = useSession();
 
+  // for the "What color is their coat?" multi-select
   const [selectedColors, setSelectedColors] = useState(listingData.color);
 
-  // For API call
-  const [updating, setUpdating] = useState(false);
-  const [updatingError, setUpdatingError] = useState(false);
+  const [update, setUpdate] = useState({
+    updating: false,
+    saved: false,
+    error: false,
+  });
 
   if (status === "loading") {
     // TO-DO: Add loading state
@@ -60,8 +79,9 @@ const UpdateListing = ({ listingData, session }: UpdateListingProps) => {
   }
 
   const methods = useZodForm({
-    schema: ListingSchema,
+    schema: updateListingSchema,
     defaultValues: {
+      id: router.query.id as string,
       img: listingData.img,
       type: listingData.type,
       species: listingData.species,
@@ -74,29 +94,36 @@ const UpdateListing = ({ listingData, session }: UpdateListingProps) => {
     },
   });
 
-  // const utils = api.useContext();
-  // const createListing = api.listing.create.useMutation({
-  //   onSettled: () => {
-  //     await utils.user.invalidate();
-  //     methods.reset();
-  //   },
-  //   onError: (e) => {
-  //     console.log("Couldn't update the listing...");
-  //     console.error(e);
-  //     setUpdatingError(true);
-  //   },
-  // });
+  const utils = api.useContext();
+  const updateListing = api.listing.update.useMutation({
+    onSettled: async () => {
+      await utils.listing.invalidate();
+      setUpdate({
+        updating: false,
+        saved: true,
+        error: false,
+      });
+    },
+    onError: (e) => {
+      console.log("And I oop- (error occurred while updating the listing)");
+      console.error(e);
+      setUpdate((prev) => ({
+        ...prev,
+        error: true,
+      }));
+    },
+  });
 
   const onSubmit = methods.handleSubmit(
     (data) => {
-      setUpdating(true);
-      setTimeout(() => {
-        console.log(data);
-      }, 3000);
-      // setTimeout(() => createListing.mutate(data), 3000)
+      setUpdate((prev) => ({
+        ...prev,
+        updating: true,
+      }));
+      updateListing.mutate(data);
     },
     (e) => {
-      console.log("And I oop- (an error occurred)");
+      console.log("And I oop- (error occurred while submitting the form)");
       console.error(e);
     }
   );
@@ -145,7 +172,7 @@ const UpdateListing = ({ listingData, session }: UpdateListingProps) => {
                       value={field.value}
                       onValueChange={field.onChange}
                     >
-                      <SelectTrigger className="italic">
+                      <SelectTrigger>
                         <SelectValue placeholder="Lost or found?" />
                       </SelectTrigger>
                       <SelectContent>
@@ -172,7 +199,7 @@ const UpdateListing = ({ listingData, session }: UpdateListingProps) => {
                       value={field.value}
                       onValueChange={field.onChange}
                     >
-                      <SelectTrigger className="italic">
+                      <SelectTrigger>
                         <SelectValue placeholder="Select a species" />
                       </SelectTrigger>
                       <SelectContent>
@@ -199,7 +226,7 @@ const UpdateListing = ({ listingData, session }: UpdateListingProps) => {
                       value={field.value}
                       onValueChange={field.onChange}
                     >
-                      <SelectTrigger className="italic">
+                      <SelectTrigger>
                         <SelectValue placeholder="Select a sex" />
                       </SelectTrigger>
                       <SelectContent>
@@ -238,7 +265,7 @@ const UpdateListing = ({ listingData, session }: UpdateListingProps) => {
                           <div className="relative">
                             <span className="inline-block w-full rounded-md shadow-sm">
                               <Listbox.Button className="flex h-10 w-full items-center justify-between rounded border border-accent/30 bg-background px-3 py-2 text-sm ring-offset-transparent !transition-colors !duration-300 placeholder:text-muted-foreground hover:border-accent focus:outline-none focus:ring-1 focus:ring-ring focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-background">
-                                <span className="block truncate pr-2 italic">
+                                <span className="block truncate pr-2">
                                   {selectedColors.length > 0
                                     ? selectedColors
                                         .map((color) => color)
@@ -354,10 +381,20 @@ const UpdateListing = ({ listingData, session }: UpdateListingProps) => {
                   {methods.formState.errors?.uniqueAttribute?.message}
                 </p>
               </div>
-              <Button type="submit" className="mt-5 w-full" disabled={updating}>
-                {updating ? "Saving..." : "Save"}
+              <Button
+                type="submit"
+                className={cn(update.saved && "bg-green-600", "mt-5 w-full")}
+                disabled={update.updating || update.saved}
+              >
+                {update.updating && !update.saved ? (
+                  <Loader2 className="animate-spin text-white" />
+                ) : update.saved ? (
+                  "Saved"
+                ) : (
+                  "Save"
+                )}
               </Button>
-              {updatingError && (
+              {update.error && (
                 <p className="text-sm italic text-red-600">
                   Oops... we weren't able to update your listing at this time.
                 </p>
@@ -370,6 +407,7 @@ const UpdateListing = ({ listingData, session }: UpdateListingProps) => {
   );
 };
 
+// check if user is logged in, and if the post they are trying to access is their post
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
