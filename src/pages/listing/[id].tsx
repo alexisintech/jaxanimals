@@ -56,11 +56,7 @@ export const updateListingSchema = z.object({
   uniqueAttribute: z.string().optional(),
 });
 
-interface UpdateListingProps {
-  listingData: Listing;
-}
-
-const UpdateListing = ({ listingData }: UpdateListingProps) => {
+const UpdateListing = ({ listingData }: { listingData: Listing }) => {
   const router = useRouter();
   const { status } = useSession();
 
@@ -103,6 +99,14 @@ const UpdateListing = ({ listingData }: UpdateListingProps) => {
         saved: true,
         error: false,
       });
+      // allow users to update listing again without having to refresh
+      setTimeout(() => {
+        setUpdate({
+          updating: false,
+          saved: false,
+          error: false,
+        });
+      }, 2000);
     },
     onError: (e) => {
       console.log("And I oop- (error occurred while updating the listing)");
@@ -332,7 +336,6 @@ const UpdateListing = ({ listingData }: UpdateListingProps) => {
                 <Input
                   id="location"
                   placeholder="E.g. Maple street, 32259"
-                  className="placeholder:italic placeholder:text-foreground"
                   {...methods.register("location")}
                 />
                 <p className="text-sm italic text-red-600">
