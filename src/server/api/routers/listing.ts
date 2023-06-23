@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { ListingSchema } from "~/pages/listing/create";
+import { updateListingSchema } from "~/pages/listing/[id]";
+import { createListingSchema } from "~/pages/listing/create";
 
 import {
   createTRPCRouter,
@@ -16,36 +17,44 @@ export const listingRouter = createTRPCRouter({
       });
       return listing;
     }),
-  // updateListing: protectedProcedure
-  //   .input(updateListingSchema)
-  //   .mutation(({ ctx, input }) => {
-  //     return ctx.prisma.user.update({
-  //       where: { id: ctx.session.user.id },
-  //       data: {
-  //         phone: input.phone,
-  //         facebook: input.facebook,
-  //         instagram: input.instagram,
-  //       },
-  //     });
-  //   }),
-  create: protectedProcedure.input(ListingSchema).mutation(({ ctx, input }) => {
-    return ctx.prisma.listing.create({
-      data: {
-        img: input.img,
-        type: input.type,
-        species: input.species,
-        sex: input.sex,
-        name: input.name,
-        color: input.color,
-        markings: input.markings,
-        uniqueAttribute: input.uniqueAttribute,
-        location: input.location,
-        user: {
-          connect: {
-            id: ctx.session.user.id,
+  create: protectedProcedure
+    .input(createListingSchema)
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.listing.create({
+        data: {
+          img: input.img,
+          type: input.type,
+          species: input.species,
+          sex: input.sex,
+          name: input.name,
+          color: input.color,
+          markings: input.markings,
+          uniqueAttribute: input.uniqueAttribute,
+          location: input.location,
+          user: {
+            connect: {
+              id: ctx.session.user.id,
+            },
           },
         },
-      },
-    });
-  }),
+      });
+    }),
+  update: protectedProcedure
+    .input(updateListingSchema)
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.listing.update({
+        where: { id: input.id },
+        data: {
+          img: input.img,
+          type: input.type,
+          species: input.species,
+          sex: input.sex,
+          color: input.color,
+          location: input.location,
+          name: input.name,
+          markings: input.markings,
+          uniqueAttribute: input.uniqueAttribute,
+        },
+      });
+    }),
 });
