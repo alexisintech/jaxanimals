@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { updateListingSchema } from "~/pages/listing/[id]";
 import { createListingSchema } from "~/pages/listing/create";
 
 import {
@@ -9,14 +8,26 @@ import {
 } from "~/server/api/trpc";
 
 export const listingRouter = createTRPCRouter({
-  getListingById: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .query(async ({ input: { id }, ctx }) => {
-      const listing = await ctx.prisma.listing.findUnique({
-        where: { id },
-      });
-      return listing;
-    }),
+  // getUserById: protectedProcedure
+  //   .input(z.object({ id: z.string() }))
+  //   .query(async ({ input: { id }, ctx }) => {
+  //     const user = await ctx.prisma.user.findUnique({
+  //       where: { id },
+  //     });
+  //     return user;
+  //   }),
+  // updateUser: protectedProcedure
+  //   .input(updateUserSchema)
+  //   .mutation(({ ctx, input }) => {
+  //     return ctx.prisma.user.update({
+  //       where: { id: ctx.session.user.id },
+  //       data: {
+  //         phone: input.phone,
+  //         facebook: input.facebook,
+  //         instagram: input.instagram,
+  //       },
+  //     });
+  //   }),
   create: protectedProcedure
     .input(createListingSchema)
     .mutation(({ ctx, input }) => {
@@ -36,24 +47,6 @@ export const listingRouter = createTRPCRouter({
               id: ctx.session.user.id,
             },
           },
-        },
-      });
-    }),
-  update: protectedProcedure
-    .input(updateListingSchema)
-    .mutation(({ ctx, input }) => {
-      return ctx.prisma.listing.update({
-        where: { id: input.id },
-        data: {
-          img: input.img,
-          type: input.type,
-          species: input.species,
-          sex: input.sex,
-          color: input.color,
-          location: input.location,
-          name: input.name,
-          markings: input.markings,
-          uniqueAttribute: input.uniqueAttribute,
         },
       });
     }),
