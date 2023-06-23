@@ -2,7 +2,6 @@ import { type GetServerSidePropsContext } from "next";
 import { getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import * as z from "zod";
 import { authOptions } from "~/server/auth";
 
@@ -18,15 +17,13 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "~/components/ui/Form";
 import { Input } from "~/components/ui/Input";
 import { Separator } from "~/components/ui/Separator";
-import { Label } from "~/components/ui/Label";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { prisma } from "~/server/db";
-import { User } from "@prisma/client";
+import { type User } from "@prisma/client";
 
 // TO-DO: try phone .regex(^[0-9]+$)
 export const updateUserSchema = z.object({
@@ -40,20 +37,8 @@ export const updateUserSchema = z.object({
         "Phone numbers must have no symbols or spaces and must include the area code.",
     })
     .optional(),
-  facebook: z
-    .string()
-    .url({
-      message:
-        "Please enter a valid URL. If you do not have a Facebook account, leave this field blank.",
-    })
-    .optional(),
-  instagram: z
-    .string()
-    .url({
-      message:
-        "Please enter a valid URL. If you do not have an Instagram account, leave this field blank.",
-    })
-    .optional(),
+  facebook: z.string().optional(),
+  instagram: z.string().optional(),
 });
 
 export default function Settings({ userData }: { userData: User }) {
@@ -62,14 +47,11 @@ export default function Settings({ userData }: { userData: User }) {
     saved: false,
     error: false,
   });
-  const { status } = useSession();
 
+  const { status } = useSession();
   if (status === "loading") {
     // load loading component
   }
-
-  const id = useRouter().query.id as string;
-  const { data: user } = api.user.getUserById.useQuery({ id });
 
   const methods = useZodForm({
     schema: updateUserSchema,
@@ -87,12 +69,19 @@ export default function Settings({ userData }: { userData: User }) {
   const updateUser = api.user.updateUser.useMutation({
     onSettled: async () => {
       await utils.user.invalidate();
-      methods.reset();
       setUpdate({
         updating: false,
         saved: true,
         error: false,
       });
+      // allow users to update settings again without having to refresh
+      setTimeout(() => {
+        setUpdate({
+          updating: false,
+          saved: false,
+          error: false,
+        });
+      }, 2000);
     },
     onError: (e) => {
       console.log(
@@ -112,8 +101,7 @@ export default function Settings({ userData }: { userData: User }) {
         ...prev,
         updating: true,
       }));
-      // updateUser.mutate(data);
-      console.log(data);
+      updateUser.mutate(data);
     },
     (e) => {
       console.log("And I oop- (error occurred while submitting the form)");
@@ -192,7 +180,7 @@ export default function Settings({ userData }: { userData: User }) {
                         <FormDescription
                           className={cn(
                             methods.formState.errors.phone && "text-red-600",
-                            "italic opacity-50"
+                            "text-xs italic opacity-50"
                           )}
                         >
                           Phone numbers must have no symbols or spaces and must
@@ -220,7 +208,15 @@ export default function Settings({ userData }: { userData: User }) {
                             )}
                           />
                         </FormControl>
-                        <FormMessage className="italic" />
+                        <FormDescription
+                          className={cn(
+                            methods.formState.errors.facebook && "text-red-600",
+                            "text-xs italic opacity-50"
+                          )}
+                        >
+                          Please enter a valid URL. If you do not have a
+                          Facebook account, leave this field blank.
+                        </FormDescription>
                       </FormItem>
                     )}
                   />
@@ -243,7 +239,16 @@ export default function Settings({ userData }: { userData: User }) {
                             )}
                           />
                         </FormControl>
-                        <FormMessage className="italic" />
+                        <FormDescription
+                          className={cn(
+                            methods.formState.errors.instagram &&
+                              "text-red-600",
+                            "text-xs italic opacity-50"
+                          )}
+                        >
+                          Please enter a valid URL. If you do not have an
+                          Instagram account, leave this field blank.
+                        </FormDescription>
                       </FormItem>
                     )}
                   />
