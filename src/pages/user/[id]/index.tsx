@@ -1,8 +1,7 @@
-import { type GetServerSidePropsContext, type NextPage } from "next";
+import { type GetServerSidePropsContext } from "next";
 import { getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import * as z from "zod";
 import { authOptions } from "~/server/auth";
 
@@ -18,65 +17,95 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "~/components/ui/Form";
 import { Input } from "~/components/ui/Input";
 import { Separator } from "~/components/ui/Separator";
-import { Label } from "~/components/ui/Label";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { prisma } from "~/server/db";
+import { type User } from "@prisma/client";
 
 // TO-DO: try phone .regex(^[0-9]+$)
 export const updateUserSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
   phone: z
     .string()
     .length(10, {
       message:
         "Phone numbers must have no symbols or spaces and must include the area code.",
     })
+    .regex(/^[0-9]+$/)
     .optional(),
-  facebook: z
-    .string()
-    .url({
-      message:
-        "Please enter a valid URL. If you do not have a Facebook account, leave this field blank.",
-    })
-    .optional(),
-  instagram: z
-    .string()
-    .url({
-      message:
-        "Please enter a valid URL. If you do not have an Instagram account, leave this field blank.",
-    })
-    .optional(),
+  facebook: z.string().optional(),
+  instagram: z.string().optional(),
 });
 
-const Settings: NextPage = () => {
-  const { status } = useSession();
+export default function Settings({ userData }: { userData: User }) {
+  const [update, setUpdate] = useState({
+    updating: false,
+    saved: false,
+    error: false,
+  });
 
+  const { status } = useSession();
   if (status === "loading") {
     // load loading component
   }
 
-  const id = useRouter().query.id as string;
-  const { data: user } = api.user.getUserById.useQuery({ id });
-
   const methods = useZodForm({
     schema: updateUserSchema,
+    defaultValues: {
+      id: userData.id,
+      name: userData.name || "",
+      email: userData.email || "",
+      phone: userData.phone || "",
+      facebook: userData.facebook || "",
+      instagram: userData.instagram || "",
+    },
   });
 
   const utils = api.useContext();
   const updateUser = api.user.updateUser.useMutation({
     onSettled: async () => {
       await utils.user.invalidate();
-      methods.reset();
+      setUpdate({
+        updating: false,
+        saved: true,
+        error: false,
+      });
+      // allow users to update settings again without having to refresh
+      setTimeout(() => {
+        setUpdate({
+          updating: false,
+          saved: false,
+          error: false,
+        });
+      }, 2000);
+    },
+    onError: (e) => {
+      console.log(
+        "And I oop- (error occurred while updating the user settings)"
+      );
+      console.error(e);
+      setUpdate((prev) => ({
+        ...prev,
+        error: true,
+      }));
     },
   });
 
   const onSubmit = methods.handleSubmit(
     (data) => {
+      setUpdate((prev) => ({
+        ...prev,
+        updating: true,
+      }));
       updateUser.mutate(data);
     },
     (e) => {
-      console.log("And I oop- (an error occurred)");
+      console.log("And I oop- (error occurred while submitting the form)");
       console.error(e);
     }
   );
@@ -102,20 +131,32 @@ const Settings: NextPage = () => {
           <Form {...methods}>
             <form onSubmit={onSubmit}>
               <div className="flex flex-col gap-5 px-10 pt-10">
-                <div className="space-y-1">
-                  <Label htmlFor="Name">Name</Label>
-                  <Input
-                    disabled
-                    value={user?.name || ""}
-                    name={user?.name || ""}
+                <div>
+                  <FormField
+                    control={methods.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input disabled {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
                   />
                 </div>
-                <div className="space-y-1">
-                  <Label htmlFor="Email">Email</Label>
-                  <Input
-                    disabled
-                    value={user?.email || ""}
-                    name={user?.email || ""}
+                <div>
+                  <FormField
+                    control={methods.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input disabled {...field} />
+                        </FormControl>
+                      </FormItem>
+                    )}
                   />
                 </div>
                 <div>
@@ -128,7 +169,7 @@ const Settings: NextPage = () => {
                         <FormControl>
                           <Input
                             {...field}
-                            placeholder={user?.phone || ""}
+                            placeholder="E.g. 9045550123"
                             maxLength={10}
                             className={cn(
                               methods.formState.errors.phone &&
@@ -140,7 +181,7 @@ const Settings: NextPage = () => {
                         <FormDescription
                           className={cn(
                             methods.formState.errors.phone && "text-red-600",
-                            "italic opacity-50"
+                            "text-xs italic opacity-50"
                           )}
                         >
                           Phone numbers must have no symbols or spaces and must
@@ -160,7 +201,7 @@ const Settings: NextPage = () => {
                         <FormControl>
                           <Input
                             {...field}
-                            placeholder={user?.facebook || ""}
+                            placeholder="E.g. https://facebook.com/example"
                             className={cn(
                               methods.formState.errors.facebook &&
                                 "border-red-600 hover:border-red-600 focus:ring-0",
@@ -168,7 +209,15 @@ const Settings: NextPage = () => {
                             )}
                           />
                         </FormControl>
-                        <FormMessage className="italic" />
+                        <FormDescription
+                          className={cn(
+                            methods.formState.errors.facebook && "text-red-600",
+                            "text-xs italic opacity-50"
+                          )}
+                        >
+                          Please enter a valid URL. If you do not have a
+                          Facebook account, leave this field blank.
+                        </FormDescription>
                       </FormItem>
                     )}
                   />
@@ -183,7 +232,7 @@ const Settings: NextPage = () => {
                         <FormControl>
                           <Input
                             {...field}
-                            placeholder={user?.instagram || ""}
+                            placeholder="E.g. https://instagram.com/example"
                             className={cn(
                               methods.formState.errors.instagram &&
                                 "border-red-600 hover:border-red-600 focus:ring-0",
@@ -191,16 +240,33 @@ const Settings: NextPage = () => {
                             )}
                           />
                         </FormControl>
-                        <FormMessage className="italic" />
+                        <FormDescription
+                          className={cn(
+                            methods.formState.errors.instagram &&
+                              "text-red-600",
+                            "text-xs italic opacity-50"
+                          )}
+                        >
+                          Please enter a valid URL. If you do not have an
+                          Instagram account, leave this field blank.
+                        </FormDescription>
                       </FormItem>
                     )}
                   />
                 </div>
-                {/* TO-DO: get isSubmititng to work :(  */}
-                <Button type="submit" className="mt-5 w-full">
-                  {methods.formState.isSubmitting
-                    ? "Saving your changes..."
-                    : "Save"}
+
+                <Button
+                  type="submit"
+                  className={cn(update.saved && "bg-green-600", "mt-5 w-full")}
+                  disabled={update.updating || update.saved}
+                >
+                  {update.updating && !update.saved ? (
+                    <Loader2 className="animate-spin text-white" />
+                  ) : update.saved ? (
+                    "Saved"
+                  ) : (
+                    "Save"
+                  )}
                 </Button>
               </div>
             </form>
@@ -209,9 +275,7 @@ const Settings: NextPage = () => {
       </main>
     </>
   );
-};
-
-export default Settings;
+}
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerSession(context.req, context.res, authOptions);
@@ -225,7 +289,22 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     };
   }
 
+  const userData = await prisma.user.findUnique({
+    where: {
+      id: session.user.id,
+    },
+  });
+
+  if (!userData) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
   return {
-    props: { session },
+    props: { session, userData },
   };
 }

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { BsMoonStarsFill } from "react-icons/bs";
 import { FiSun } from "react-icons/fi";
 import { useTheme } from "next-themes";
@@ -20,20 +19,31 @@ import {
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { cn } from "~/utils/cn";
+import { useEffect, useState } from "react";
 
 const Header = ({ loggingIn }: HeaderProps) => {
+  const [mounted, setMounted] = useState(false); // for next-themes
   const { theme, setTheme } = useTheme();
   const { data: sessionData } = useSession();
   const { push, asPath } = useRouter();
   const user = sessionData?.user;
+
+  // fixing a hydration error for next-themes
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   const handleLogin = () => push(`/login?callbackUrl=${asPath}`);
 
   return (
     <header className="sticky top-0 z-40 w-full items-center justify-between backdrop-blur">
       <div className="container flex h-16 items-center ">
-        <div className="mr-4 flex">
-          <Link className="mr-6 flex items-center space-x-2" href="/">
+        <div className="flex">
+          <Link className="flex items-center space-x-2" href="/">
             <span className="text-lg font-bold text-background dark:text-foreground sm:inline-block lg:text-xl xl:text-2xl">
               JaxAnimals
             </span>
