@@ -9,6 +9,10 @@ import {
 } from "~/server/api/trpc";
 
 export const listingRouter = createTRPCRouter({
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    return ctx.prisma.listing.findMany();
+  }),
+
   getListingById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input: { id }, ctx }) => {
@@ -17,6 +21,7 @@ export const listingRouter = createTRPCRouter({
       });
       return listing;
     }),
+
   create: protectedProcedure
     .input(createListingSchema)
     .mutation(({ ctx, input }) => {
@@ -39,6 +44,7 @@ export const listingRouter = createTRPCRouter({
         },
       });
     }),
+
   update: protectedProcedure
     .input(updateListingSchema)
     .mutation(({ ctx, input }) => {

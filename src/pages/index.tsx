@@ -3,6 +3,7 @@ import Head from "next/head";
 
 import Header from "~/components/ui/Header";
 import Hero from "~/components/index/Hero";
+import Listings from "~/components/index/listing/Listings";
 
 const Home: NextPage = () => {
   return (
@@ -17,6 +18,7 @@ const Home: NextPage = () => {
       </Head>
       <Header loggingIn={false} />
       <Hero />
+      <Listings />
     </>
   );
 };

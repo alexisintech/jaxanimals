@@ -140,13 +140,13 @@ const CreateListing: NextPage = () => {
                               className="hidden"
                               {...methods.register("img")}
                             />
-                            <div className="mx-auto flex h-[250px] w-[250px] rounded border border-accent/20 object-cover p-2">
+                            <div className="mx-auto flex h-[270px] w-[216px]">
                               <Image
                                 alt="user's uploaded image of pet"
                                 src={imageUrl}
-                                width={500}
-                                height={500}
-                                className="mx-auto object-cover"
+                                width={270}
+                                height={216}
+                                className="mx-auto rounded-md object-cover"
                               />
                             </div>
                           </>
